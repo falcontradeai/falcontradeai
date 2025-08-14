@@ -7,9 +7,14 @@ const offerRoutes = require('./routes/offers');
 const rfqRoutes = require('./routes/rfqs');
 const marketDataRoutes = require('./routes/marketData');
 const messageRoutes = require('./routes/messages');
+const paymentRoutes = require('./routes/payments');
+const stripeWebhook = require('./webhooks/stripe');
 
 const app = express();
 app.use(cors());
+
+app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
+
 app.use(express.json());
 
 app.use('/api/v1/auth', authRoutes);
@@ -17,6 +22,7 @@ app.use('/api/v1/offers', offerRoutes);
 app.use('/api/v1/rfqs', rfqRoutes);
 app.use('/api/v1/market-data', marketDataRoutes);
 app.use('/api/v1/messages', messageRoutes);
+app.use('/api/v1/payments', paymentRoutes);
 
 app.get('/', (req, res) => {
   res.send('FalconTrade Backend is running');
