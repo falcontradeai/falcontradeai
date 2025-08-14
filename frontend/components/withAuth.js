@@ -4,26 +4,28 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function withAuth(Component, requiredRole) {
   return function Protected(props) {
-    const { token, user } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-      if (!token) {
+      if (loading) return;
+      if (!user) {
         router.replace('/login');
-      } else if (requiredRole && user?.role !== requiredRole) {
+      } else if (requiredRole && user.role !== requiredRole) {
         router.replace('/');
       } else if (
-        user?.role === 'subscriber' &&
+        user.role === 'subscriber' &&
         user.subscriptionStatus !== 'active'
       ) {
         router.replace('/pricing');
       }
-    }, [token, user, router]);
+    }, [user, loading, router]);
 
     if (
-      !token ||
-      (requiredRole && user?.role !== requiredRole) ||
-      (user?.role === 'subscriber' && user.subscriptionStatus !== 'active')
+      loading ||
+      !user ||
+      (requiredRole && user.role !== requiredRole) ||
+      (user.role === 'subscriber' && user.subscriptionStatus !== 'active')
     ) {
       return null;
     }

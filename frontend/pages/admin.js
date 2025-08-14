@@ -4,24 +4,24 @@ import { useAuth } from '../contexts/AuthContext';
 import withAuth from '../components/withAuth';
 
 function Admin() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [metrics, setMetrics] = useState(null);
 
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/v1/admin/metrics', {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         });
         setMetrics(res.data);
       } catch (err) {
         console.error(err);
       }
     };
-    if (token) {
+    if (user) {
       fetchMetrics();
     }
-  }, [token]);
+  }, [user]);
 
   if (!metrics) return <p>Loading...</p>;
 

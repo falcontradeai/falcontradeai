@@ -13,29 +13,30 @@ import {
 import withAuth from '../components/withAuth';
 
 function Dashboard() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [watchlist, setWatchlist] = useState([]);
   const [news, setNews] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const watchlistRes = await axios.get('http://localhost:5000/api/v1/watchlist', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const watchlistRes = await axios.get(
+          'http://localhost:5000/api/v1/watchlist',
+          { withCredentials: true }
+        );
         setWatchlist(watchlistRes.data);
         const newsRes = await axios.get('http://localhost:5000/api/v1/news', {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         });
         setNews(newsRes.data);
       } catch (err) {
         console.error(err);
       }
     };
-    if (token) {
+    if (user) {
       fetchData();
     }
-  }, [token]);
+  }, [user]);
 
   return (
     <div className="p-4">
