@@ -10,6 +10,8 @@ module.exports = (sequelize) => {
       password: { type: DataTypes.STRING, allowNull: false },
       role: { type: DataTypes.STRING, allowNull: false },
       subscriptionStatus: { type: DataTypes.STRING, defaultValue: 'inactive' },
+      verificationToken: { type: DataTypes.STRING },
+      resetToken: { type: DataTypes.STRING },
     },
     {
       hooks: {
