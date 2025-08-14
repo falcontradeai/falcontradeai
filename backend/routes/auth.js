@@ -2,9 +2,18 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
 const { User } = require('../models');
 
 const router = express.Router();
+
+const authLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: 'Too many requests, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -16,7 +25,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', authLimiter, async (req, res) => {
   const { username, password, role } = req.body;
   try {
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -49,7 +58,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   const { username, password } = req.body;
   try {
     const user = await User.findOne({ where: { username } });
@@ -118,7 +127,7 @@ router.get('/verify-email', async (req, res) => {
   }
 });
 
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', authLimiter, async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ where: { username: email } });
@@ -144,7 +153,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password', authLimiter, async (req, res) => {
   const { token, password } = req.body;
   try {
     const user = await User.findOne({ where: { resetToken: token } });
