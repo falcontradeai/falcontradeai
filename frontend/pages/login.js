@@ -20,7 +20,11 @@ export default function Login() {
       login(res.data);
       router.push('/');
     } catch (err) {
-      alert('Login failed');
+      if (err.response && err.response.status === 403) {
+        alert(err.response.data.message);
+      } else {
+        alert('Login failed');
+      }
     }
   };
 

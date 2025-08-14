@@ -56,6 +56,9 @@ router.post('/login', async (req, res) => {
     if (!user || !(await user.validatePassword(password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+    if (user.verificationToken) {
+      return res.status(403).json({ message: 'Please verify your email' });
+    }
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET || 'secret',
