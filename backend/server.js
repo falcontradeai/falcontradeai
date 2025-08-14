@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { sequelize, WatchlistItem, NewsItem } = require('./models');
+const { scheduleMarketDataRefresh } = require('./services/marketDataService');
 
 const authRoutes = require('./routes/auth');
 const offerRoutes = require('./routes/offers');
@@ -59,4 +60,5 @@ sequelize.sync().then(async () => {
     ]);
   }
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  scheduleMarketDataRefresh();
 });
