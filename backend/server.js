@@ -15,6 +15,7 @@ const watchlistRoutes = require('./routes/watchlist');
 const newsRoutes = require('./routes/news');
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/users');
+const forecastRoutes = require('./routes/forecast');
 const stripeWebhook = require('./webhooks/stripe');
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/offers', offerRoutes);
 app.use('/api/v1/rfqs', rfqRoutes);
 app.use('/api/v1/market-data', marketDataRoutes);
+app.use('/api/v1/forecast', forecastRoutes);
 app.use('/api/v1/messages', messageRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/watchlist', watchlistRoutes);

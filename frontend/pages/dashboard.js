@@ -16,6 +16,7 @@ function Dashboard() {
   const { user } = useAuth();
   const [watchlist, setWatchlist] = useState([]);
   const [news, setNews] = useState([]);
+  const [forecastData, setForecastData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +30,19 @@ function Dashboard() {
           withCredentials: true,
         });
         setNews(newsRes.data);
+        const forecastRes = await axios.get(
+          'http://localhost:5000/api/v1/forecast/gold',
+          { withCredentials: true }
+        );
+        const { historical = [], forecast = [] } = forecastRes.data;
+        const combined = historical.map((h) => ({
+          date: h.date,
+          historical: h.price,
+        }));
+        forecast.forEach((f) => {
+          combined.push({ date: f.date, forecast: f.price });
+        });
+        setForecastData(combined);
       } catch (err) {
         console.error(err);
       }
@@ -49,6 +63,19 @@ function Dashboard() {
             <YAxis />
             <Tooltip />
             <Line type="monotone" dataKey="price" stroke="#8884d8" />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <h1 className="text-2xl mt-8 mb-4">Gold Price Forecast</h1>
+      <div style={{ width: '100%', height: 300 }}>
+        <ResponsiveContainer>
+          <LineChart data={forecastData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="historical" stroke="#8884d8" name="Historical" />
+            <Line type="monotone" dataKey="forecast" stroke="#82ca9d" name="Forecast" />
           </LineChart>
         </ResponsiveContainer>
       </div>
