@@ -7,6 +7,11 @@ module.exports = (sequelize) => {
     symbol: { type: DataTypes.STRING, allowNull: false },
     price: { type: DataTypes.FLOAT, allowNull: false },
     quantity: { type: DataTypes.INTEGER, allowNull: false },
+    status: {
+      type: DataTypes.ENUM('pending', 'approved', 'featured'),
+      allowNull: false,
+      defaultValue: 'pending',
+    },
   });
   return Offer;
 };
