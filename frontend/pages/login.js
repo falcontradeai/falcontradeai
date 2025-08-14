@@ -12,11 +12,12 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/auth/login', {
-        username,
-        password,
-      });
-      login(res.data.token, res.data.user);
+      const res = await axios.post(
+        'http://localhost:5000/api/v1/auth/login',
+        { username, password },
+        { withCredentials: true }
+      );
+      login(res.data);
       router.push('/');
     } catch (err) {
       alert('Login failed');
