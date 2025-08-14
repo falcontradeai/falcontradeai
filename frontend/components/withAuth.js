@@ -7,19 +7,32 @@ export default function withAuth(Component, requiredRole) {
     const { user, loading } = useAuth();
     const router = useRouter();
 
+    const getDashboard = (role) => {
+      switch (role) {
+        case 'buyer':
+          return '/buyer/dashboard';
+        case 'seller':
+          return '/seller/dashboard';
+        case 'admin':
+          return '/admin';
+        default:
+          return '/';
+      }
+    };
+
     useEffect(() => {
       if (loading) return;
       if (!user) {
         router.replace('/login');
       } else if (requiredRole && user.role !== requiredRole) {
-        router.replace('/');
+        router.replace(getDashboard(user.role));
       } else if (
         user.role === 'subscriber' &&
         user.subscriptionStatus !== 'active'
       ) {
         router.replace('/pricing');
       }
-    }, [user, loading, router]);
+    }, [user, loading, router, requiredRole]);
 
     if (
       loading ||
