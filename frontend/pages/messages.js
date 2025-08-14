@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import withAuth from '../components/withAuth';
 
 function Messages() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [toUserId, setToUserId] = useState('');
   const [content, setContent] = useState('');
@@ -13,7 +13,7 @@ function Messages() {
   const fetchMessages = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/v1/messages', {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
       });
       setMessages(res.data);
     } catch (err) {
@@ -22,10 +22,10 @@ function Messages() {
   };
 
   useEffect(() => {
-    if (token) {
+    if (user) {
       fetchMessages();
     }
-  }, [token]);
+  }, [user]);
 
   const handleFileChange = (e) => {
     setFiles(Array.from(e.target.files));
@@ -39,8 +39,8 @@ function Messages() {
       formData.append('content', content);
       files.forEach((file) => formData.append('attachments', file));
       await axios.post('http://localhost:5000/api/v1/messages', formData, {
+        withCredentials: true,
         headers: {
-          Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });

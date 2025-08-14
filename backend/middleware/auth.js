@@ -4,11 +4,15 @@ const { User } = require('../models');
 // Middleware to verify JWT tokens and attach the user to the request
 async function auth(req, res, next) {
   const authHeader = req.headers['authorization'];
-  if (!authHeader) {
+  let token;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  } else {
+    token = req.cookies.token;
+  }
+  if (!token) {
     return res.status(401).json({ message: 'No token provided' });
   }
-
-  const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
     const user = await User.findByPk(decoded.id);
