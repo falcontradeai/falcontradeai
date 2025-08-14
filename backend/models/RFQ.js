@@ -6,7 +6,11 @@ module.exports = (sequelize) => {
     userId: { type: DataTypes.INTEGER, allowNull: false },
     symbol: { type: DataTypes.STRING, allowNull: false },
     quantity: { type: DataTypes.INTEGER, allowNull: false },
-    status: { type: DataTypes.STRING, allowNull: false, defaultValue: 'open' },
+    status: {
+      type: DataTypes.ENUM('pending', 'approved', 'featured'),
+      allowNull: false,
+      defaultValue: 'pending',
+    },
   });
   return RFQ;
 };

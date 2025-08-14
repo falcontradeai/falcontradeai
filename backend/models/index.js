@@ -18,6 +18,12 @@ User.hasMany(Message, { as: 'receivedMessages', foreignKey: 'toUserId' });
 Message.belongsTo(User, { as: 'fromUser', foreignKey: 'fromUserId' });
 Message.belongsTo(User, { as: 'toUser', foreignKey: 'toUserId' });
 
+Offer.hasMany(Message, { foreignKey: 'offerId' });
+Message.belongsTo(Offer, { foreignKey: 'offerId' });
+
+RFQ.hasMany(Message, { foreignKey: 'rfqId' });
+Message.belongsTo(RFQ, { foreignKey: 'rfqId' });
+
 module.exports = {
   sequelize,
   User,
