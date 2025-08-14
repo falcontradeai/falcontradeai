@@ -12,6 +12,9 @@ module.exports = (sequelize) => {
       subscriptionStatus: { type: DataTypes.STRING, defaultValue: 'inactive' },
       verificationToken: { type: DataTypes.STRING },
       resetToken: { type: DataTypes.STRING },
+      companyName: { type: DataTypes.STRING },
+      companyWebsite: { type: DataTypes.STRING },
+      logoUrl: { type: DataTypes.STRING },
     },
     {
       hooks: {
