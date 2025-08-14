@@ -51,10 +51,21 @@ function Dashboard() {
           </LineChart>
         </ResponsiveContainer>
       </div>
+      <h2 className="text-xl mt-8 mb-2">Watchlist Items</h2>
+      <ul>
+        {watchlist.map((item) => (
+          <li key={item.id}>
+            {item.symbol}: {item.price}
+          </li>
+        ))}
+      </ul>
       <h2 className="text-xl mt-8 mb-2">Latest News</h2>
       <ul>
         {news.map((item) => (
-          <li key={item.id}>{item.title}</li>
+          <li key={item.id}>
+            <strong>{item.title}</strong>
+            <p>{item.content}</p>
+          </li>
         ))}
       </ul>
     </div>
