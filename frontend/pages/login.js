@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
@@ -10,16 +11,14 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:5000/api/v1/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      login(data.token, { username });
+    try {
+      const res = await axios.post('http://localhost:5000/api/v1/auth/login', {
+        username,
+        password,
+      });
+      login(res.data.token, res.data.user);
       router.push('/');
-    } else {
+    } catch (err) {
       alert('Login failed');
     }
   };
