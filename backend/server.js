@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const { sequelize } = require('./models');
 
 const authRoutes = require('./routes/auth');
@@ -11,7 +12,8 @@ const paymentRoutes = require('./routes/payments');
 const stripeWebhook = require('./webhooks/stripe');
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cookieParser());
 
 app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 

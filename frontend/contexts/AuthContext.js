@@ -7,24 +7,31 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedToken = typeof window !== 'undefined' && localStorage.getItem('token');
-    const storedUser = typeof window !== 'undefined' && localStorage.getItem('user');
-    if (storedToken) setToken(storedToken);
-    if (storedUser) setUser(JSON.parse(storedUser));
+    const fetchUser = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/v1/auth/me', {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data);
+          setToken(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchUser();
   }, []);
 
-  const login = (jwt, userData) => {
-    setToken(jwt);
+  const login = (userData) => {
     setUser(userData);
-    localStorage.setItem('token', jwt);
-    localStorage.setItem('user', JSON.stringify(userData));
+    setToken(true);
   };
 
   const logout = () => {
-    setToken(null);
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    setToken(null);
   };
 
   return (
