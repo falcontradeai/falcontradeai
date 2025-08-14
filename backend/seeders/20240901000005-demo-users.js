@@ -10,7 +10,7 @@ module.exports = {
       {
         username: 'alice',
         password: password1,
-        role: 'trader',
+        role: 'buyer',
         subscriptionStatus: 'active',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -18,7 +18,7 @@ module.exports = {
       {
         username: 'bob',
         password: password2,
-        role: 'broker',
+        role: 'seller',
         subscriptionStatus: 'inactive',
         createdAt: new Date(),
         updatedAt: new Date(),

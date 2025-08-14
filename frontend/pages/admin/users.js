@@ -60,6 +60,8 @@ function AdminUsers() {
               value={user.role}
               onChange={(e) => handleRoleChange(user.id, e.target.value)}
             >
+              <option value="buyer">buyer</option>
+              <option value="seller">seller</option>
               <option value="subscriber">subscriber</option>
               <option value="admin">admin</option>
             </select>
