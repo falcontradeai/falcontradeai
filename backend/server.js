@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const { sequelize, WatchlistItem, NewsItem } = require('./models');
 const { scheduleMarketDataRefresh } = require('./services/marketDataService');
 
@@ -18,6 +19,7 @@ const stripeWebhook = require('./webhooks/stripe');
 const app = express();
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 

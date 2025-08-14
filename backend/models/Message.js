@@ -8,6 +8,7 @@ module.exports = (sequelize) => {
     content: { type: DataTypes.TEXT, allowNull: false },
     offerId: { type: DataTypes.INTEGER, allowNull: true },
     rfqId: { type: DataTypes.INTEGER, allowNull: true },
+    attachments: { type: DataTypes.JSON, allowNull: true },
   });
   return Message;
 };
