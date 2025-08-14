@@ -1,4 +1,7 @@
-const { User, Offer } = require('../models');
+const { User, Offer, RFQ } = require('../models');
+const Stripe = require('stripe');
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 async function getMetrics(req, res) {
   try {
@@ -19,6 +22,22 @@ async function getUsers(req, res) {
   try {
     const users = await User.findAll();
     res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function updateUser(req, res) {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const { role, subscriptionStatus } = req.body;
+    if (role) user.role = role;
+    if (subscriptionStatus) user.subscriptionStatus = subscriptionStatus;
+    await user.save();
+    res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -73,12 +92,66 @@ async function deleteListing(req, res) {
   }
 }
 
+async function getRFQs(req, res) {
+  try {
+    const rfqs = await RFQ.findAll();
+    res.json(rfqs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function approveRFQ(req, res) {
+  try {
+    const rfq = await RFQ.findByPk(req.params.id);
+    if (!rfq) {
+      return res.status(404).json({ message: 'RFQ not found' });
+    }
+    rfq.status = 'approved';
+    await rfq.save();
+    res.json(rfq);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function rejectRFQ(req, res) {
+  try {
+    const rfq = await RFQ.findByPk(req.params.id);
+    if (!rfq) {
+      return res.status(404).json({ message: 'RFQ not found' });
+    }
+    rfq.status = 'rejected';
+    await rfq.save();
+    res.json(rfq);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function getStripeRevenue(req, res) {
+  try {
+    const charges = await stripe.charges.list({ limit: 100 });
+    const revenue = charges.data
+      .filter((c) => c.status === 'succeeded')
+      .reduce((sum, c) => sum + c.amount, 0);
+    res.json({ revenue: revenue / 100 });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 module.exports = {
   getMetrics,
   getUsers,
+  updateUser,
   deleteUser,
   getListings,
   approveListing,
   deleteListing,
+  getRFQs,
+  approveRFQ,
+  rejectRFQ,
+  getStripeRevenue,
 };
 

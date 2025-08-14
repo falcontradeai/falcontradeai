@@ -4,20 +4,30 @@ const { isAdmin } = require('../middleware/roles');
 const {
   getMetrics,
   getUsers,
+  updateUser,
   deleteUser,
   getListings,
   approveListing,
   deleteListing,
+  getRFQs,
+  approveRFQ,
+  rejectRFQ,
+  getStripeRevenue,
 } = require('../controllers/admin');
 
 const router = express.Router();
 
 router.get('/metrics', auth, isAdmin, getMetrics);
 router.get('/users', auth, isAdmin, getUsers);
+router.put('/users/:id', auth, isAdmin, updateUser);
 router.delete('/users/:id', auth, isAdmin, deleteUser);
 router.get('/listings', auth, isAdmin, getListings);
 router.post('/listings/:id/approve', auth, isAdmin, approveListing);
 router.delete('/listings/:id', auth, isAdmin, deleteListing);
+router.get('/rfqs', auth, isAdmin, getRFQs);
+router.post('/rfqs/:id/approve', auth, isAdmin, approveRFQ);
+router.post('/rfqs/:id/reject', auth, isAdmin, rejectRFQ);
+router.get('/revenue', auth, isAdmin, getStripeRevenue);
 
 module.exports = router;
 

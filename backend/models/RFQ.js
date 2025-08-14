@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
     symbol: { type: DataTypes.STRING, allowNull: false },
     quantity: { type: DataTypes.INTEGER, allowNull: false },
     status: {
-      type: DataTypes.ENUM('pending', 'approved', 'featured'),
+      type: DataTypes.ENUM('pending', 'approved', 'featured', 'rejected'),
       allowNull: false,
       defaultValue: 'pending',
     },

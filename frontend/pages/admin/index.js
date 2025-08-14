@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
-import withAuth from '../components/withAuth';
+import { useAuth } from '../../contexts/AuthContext';
+import withAuth from '../../components/withAuth';
 
-function Admin() {
+function AdminDashboard() {
   const { user } = useAuth();
   const [metrics, setMetrics] = useState(null);
 
@@ -35,7 +35,7 @@ function Admin() {
         </div>
         <div className="p-4 border rounded">
           <h2 className="text-xl">Revenue</h2>
-          <p className="text-3xl">${metrics.revenue}</p>
+          <p className="text-3xl">${metrics.totalRevenue}</p>
         </div>
         <div className="p-4 border rounded">
           <h2 className="text-xl">Pending Listings</h2>
@@ -46,4 +46,5 @@ function Admin() {
   );
 }
 
-export default withAuth(Admin, 'admin');
+export default withAuth(AdminDashboard, 'admin');
+
