@@ -1,12 +1,12 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const { isAdmin } = require('../middleware/roles');
+const { isAdmin, isSubscriber } = require('../middleware/roles');
 const { Offer } = require('../models');
 
 const router = express.Router();
 
 // Create a new offer
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
   try {
     const { symbol, price, quantity } = req.body;
     const offer = await Offer.create({
@@ -22,13 +22,13 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Get all offers
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
   const offers = await Offer.findAll();
   res.json(offers);
 });
 
 // Get a single offer
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
   const offer = await Offer.findByPk(req.params.id);
   if (!offer) {
     return res.status(404).json({ message: 'Offer not found' });

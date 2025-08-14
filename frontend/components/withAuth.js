@@ -12,10 +12,19 @@ export default function withAuth(Component, requiredRole) {
         router.replace('/login');
       } else if (requiredRole && user?.role !== requiredRole) {
         router.replace('/');
+      } else if (
+        user?.role === 'subscriber' &&
+        user.subscriptionStatus !== 'active'
+      ) {
+        router.replace('/pricing');
       }
     }, [token, user, router]);
 
-    if (!token || (requiredRole && user?.role !== requiredRole)) {
+    if (
+      !token ||
+      (requiredRole && user?.role !== requiredRole) ||
+      (user?.role === 'subscriber' && user.subscriptionStatus !== 'active')
+    ) {
       return null;
     }
 

@@ -38,7 +38,12 @@ router.post('/signup', async (req, res) => {
       console.error('Error sending verification email', mailErr);
     }
 
-    res.json({ id: user.id, username: user.username, role: user.role });
+    res.json({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      subscriptionStatus: user.subscriptionStatus,
+    });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -62,7 +67,12 @@ router.post('/login', async (req, res) => {
       sameSite: 'lax',
       maxAge: 3600000,
     });
-    res.json({ id: user.id, username: user.username, role: user.role });
+    res.json({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      subscriptionStatus: user.subscriptionStatus,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -79,7 +89,12 @@ router.get('/me', async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: 'Invalid token' });
     }
-    res.json({ id: user.id, username: user.username, role: user.role });
+    res.json({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      subscriptionStatus: user.subscriptionStatus,
+    });
   } catch (err) {
     res.status(401).json({ message: 'Invalid token' });
   }

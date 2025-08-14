@@ -1,12 +1,12 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const { isAdmin } = require('../middleware/roles');
+const { isAdmin, isSubscriber } = require('../middleware/roles');
 const { RFQ } = require('../models');
 
 const router = express.Router();
 
 // Create a new RFQ
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
   try {
     const { symbol, quantity } = req.body;
     const rfq = await RFQ.create({
@@ -21,13 +21,13 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Get all RFQs
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
   const rfqs = await RFQ.findAll();
   res.json(rfqs);
 });
 
 // Get a single RFQ
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
   const rfq = await RFQ.findByPk(req.params.id);
   if (!rfq) {
     return res.status(404).json({ message: 'RFQ not found' });
