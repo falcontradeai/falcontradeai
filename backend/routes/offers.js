@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const auth = require('../middleware/auth');
-const { isAdmin, isSubscriber } = require('../middleware/roles');
+const { isAdmin } = require('../middleware/roles');
 const { Offer } = require('../models');
 const { Op } = require('sequelize');
 
@@ -23,7 +23,6 @@ const upload = multer({
 router.post(
   '/',
   auth,
-  isSubscriber,
   auth.requireActiveSubscription,
   upload.array('attachments'),
   async (req, res) => {
@@ -50,7 +49,7 @@ router.post(
 );
 
 // Get all offers
-router.get('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
+router.get('/', auth, auth.requireActiveSubscription, async (req, res) => {
   const {
     commodity,
     status,
@@ -98,7 +97,7 @@ router.get('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, 
 });
 
 // Get a single offer
-router.get('/:id', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
+router.get('/:id', auth, auth.requireActiveSubscription, async (req, res) => {
   const offer = await Offer.findByPk(req.params.id);
   if (!offer) {
     return res.status(404).json({ message: 'Offer not found' });
