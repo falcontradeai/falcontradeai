@@ -31,13 +31,13 @@ function Dashboard() {
       setLoadingWatchlist(true);
       try {
         const [watchlistRes, newsRes, symbolsRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/v1/watchlist', {
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/watchlist`, {
             withCredentials: true,
           }),
-          axios.get('http://localhost:5000/api/v1/news', {
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/news`, {
             withCredentials: true,
           }),
-          axios.get('http://localhost:5000/api/v1/market-data', {
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/market-data`, {
             withCredentials: true,
           }),
         ]);
@@ -60,11 +60,11 @@ function Dashboard() {
       setLoadingForecast(true);
       try {
         const forecastRes = await axios.get(
-          `http://localhost:5000/api/v1/forecast/${selectedSymbol}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/forecast/${selectedSymbol}`,
           { withCredentials: true }
         );
         const marketRes = await axios.get(
-          `http://localhost:5000/api/v1/marketData/${selectedSymbol}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/marketData/${selectedSymbol}`,
           { withCredentials: true }
         );
         setMarketInfo(marketRes.data);

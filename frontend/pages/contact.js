@@ -22,7 +22,7 @@ export default function Contact() {
       formData.append('file', file);
     }
     try {
-      await axios.post('http://localhost:5000/api/v1/contact', formData, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/contact`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setStatus('Message sent successfully.');

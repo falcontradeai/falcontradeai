@@ -9,7 +9,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/v1/auth/me', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/me`, {
           credentials: 'include',
         });
         if (res.ok) {

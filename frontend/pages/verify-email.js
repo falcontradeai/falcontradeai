@@ -12,7 +12,7 @@ export default function VerifyEmail() {
     const verify = async () => {
       try {
         await axios.get(
-          `http://localhost:5000/api/v1/auth/verify-email?token=${token}`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/verify-email?token=${token}`
         );
         setMessage('Email verified successfully.');
       } catch (err) {

@@ -15,7 +15,7 @@ function OfferDetail() {
 
   const fetchOffer = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/offers/${id}`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/offers/${id}`, {
         withCredentials: true,
       });
       setOffer(res.data);
@@ -27,7 +27,7 @@ function OfferDetail() {
   const fetchMessages = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/v1/messages?offerId=${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages?offerId=${id}`,
         { withCredentials: true }
       );
       setMessages(res.data);
@@ -55,7 +55,7 @@ function OfferDetail() {
       formData.append('content', content);
       formData.append('offerId', id);
       files.forEach((file) => formData.append('attachments', file));
-      await axios.post('http://localhost:5000/api/v1/messages', formData, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -89,14 +89,14 @@ function OfferDetail() {
                 att.mimetype && att.mimetype.startsWith('image/') ? (
                   <img
                     key={idx}
-                    src={`http://localhost:5000${att.url}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${att.url}`}
                     alt={att.originalname}
                     className="max-w-xs mt-2"
                   />
                 ) : (
                   <a
                     key={idx}
-                    href={`http://localhost:5000${att.url}`}
+                    href={`${process.env.NEXT_PUBLIC_API_URL}${att.url}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline block mt-2"

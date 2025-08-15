@@ -13,7 +13,7 @@ function AdminDashboard() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/v1/admin/metrics', {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/metrics`, {
           withCredentials: true,
         });
         setMetrics(res.data);
@@ -24,7 +24,7 @@ function AdminDashboard() {
 
     const fetchNotifications = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/v1/admin/notifications', {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/notifications`, {
           withCredentials: true,
         });
         setNotifications(res.data);
@@ -43,7 +43,7 @@ function AdminDashboard() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/v1/admin/notifications',
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/notifications`,
         { message, targetRoles: roles },
         { withCredentials: true },
       );

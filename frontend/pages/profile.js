@@ -14,7 +14,7 @@ function Profile() {
     if (!user) return;
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/v1/users/me', {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/me`, {
           withCredentials: true,
         });
         setCompanyName(res.data.companyName || '');
@@ -37,7 +37,7 @@ function Profile() {
         formData.append('logo', logo);
       }
       const res = await axios.put(
-        'http://localhost:5000/api/v1/users/me',
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/me`,
         formData,
         {
           withCredentials: true,
@@ -68,7 +68,7 @@ function Profile() {
         />
         {logoUrl && (
           <img
-            src={`http://localhost:5000${logoUrl}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}${logoUrl}`}
             alt="Company Logo"
             className="h-24"
           />

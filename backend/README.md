@@ -22,4 +22,4 @@ This loads initial market data from `data/marketData.json` so scheduled refreshe
 
 The backend expects configuration via environment variables. Copy `.env.example` to `.env` and provide values. In particular:
 
-- `FRONTEND_URL` — base URL of the frontend application used in verification and password reset emails.
+- `FRONTEND_URL` — base URL of the frontend application used in verification and password reset emails and for CORS.
