@@ -1,4 +1,5 @@
 const { User, Offer, RFQ, sequelize } = require('../models');
+const { Op } = require('sequelize');
 const Stripe = require('stripe');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -248,6 +249,29 @@ async function getStripeRevenue(req, res) {
   }
 }
 
+async function getTransactions(req, res) {
+  try {
+    const activeOffers = await Offer.findAll({
+      where: { orderStatus: { [Op.ne]: 'completed' } },
+    });
+    const pastOffers = await Offer.findAll({
+      where: { orderStatus: 'completed' },
+    });
+    const activeRFQs = await RFQ.findAll({
+      where: { orderStatus: { [Op.ne]: 'completed' } },
+    });
+    const pastRFQs = await RFQ.findAll({
+      where: { orderStatus: 'completed' },
+    });
+    res.json({
+      active: { offers: activeOffers, rfqs: activeRFQs },
+      past: { offers: pastOffers, rfqs: pastRFQs },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 module.exports = {
   getMetrics,
   getUsers,
@@ -263,5 +287,6 @@ module.exports = {
   approveRFQ,
   rejectRFQ,
   getStripeRevenue,
+  getTransactions,
 };
 

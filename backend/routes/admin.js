@@ -16,6 +16,7 @@ const {
   approveRFQ,
   rejectRFQ,
   getStripeRevenue,
+  getTransactions,
 } = require('../controllers/admin');
 const { Notification, User } = require('../models');
 const notificationService = require('../services/notificationService');
@@ -36,6 +37,7 @@ router.get('/rfqs', auth, isAdmin, getRFQs);
 router.post('/rfqs/:id/approve', auth, isAdmin, approveRFQ);
 router.post('/rfqs/:id/reject', auth, isAdmin, rejectRFQ);
 router.get('/revenue', auth, isAdmin, getStripeRevenue);
+router.get('/transactions', auth, isAdmin, getTransactions);
 
 // Notifications
 router.post('/notifications', auth, isAdmin, async (req, res) => {

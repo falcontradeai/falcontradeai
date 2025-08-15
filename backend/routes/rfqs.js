@@ -19,11 +19,19 @@ const upload = multer({
   }),
 });
 
+// Allow admins to bypass subscription requirement
+const requireSubscriptionOrAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    return next();
+  }
+  return auth.requireActiveSubscription(req, res, next);
+};
+
 // Create a new RFQ
 router.post(
   '/',
   auth,
-  auth.requireActiveSubscription,
+  requireSubscriptionOrAdmin,
   upload.array('attachments'),
   async (req, res) => {
     try {
