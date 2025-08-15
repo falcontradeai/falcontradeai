@@ -7,7 +7,7 @@ try {
   console.warn('TensorFlow.js not installed, using stub forecast');
 }
 
-function forecastFromHistorical(historical, periods = 3) {
+function forecastFromHistorical(historical, periods = 7) {
   if (!Array.isArray(historical) || historical.length === 0) return [];
   const prices = historical.map((h) => h.price);
   let predicted = [];
@@ -36,12 +36,12 @@ function forecastFromHistorical(historical, periods = 3) {
   const lastDate = new Date(historical[historical.length - 1].date);
   return predicted.map((p, idx) => {
     const d = new Date(lastDate);
-    d.setMonth(d.getMonth() + idx + 1);
+    d.setDate(d.getDate() + idx + 1);
     return { date: d.toISOString().split('T')[0], price: parseFloat(p.toFixed(2)) };
   });
 }
 
-async function getForecastForCommodity(commodity, periods = 3) {
+async function getForecastForCommodity(commodity, periods = 7) {
   const record = await MarketData.findOne({ where: { commodity } });
   if (!record) return null;
   const forecast = forecastFromHistorical(record.historical, periods);

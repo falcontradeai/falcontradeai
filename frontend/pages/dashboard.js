@@ -19,6 +19,7 @@ function Dashboard() {
   const [watchlist, setWatchlist] = useState([]);
   const [news, setNews] = useState([]);
   const [forecastData, setForecastData] = useState([]);
+  const [symbolForecasts, setSymbolForecasts] = useState({});
   const [marketInfo, setMarketInfo] = useState(null);
   const [selectedSymbol, setSelectedSymbol] = useState('gold');
   const [symbols, setSymbols] = useState([]);
@@ -89,6 +90,37 @@ function Dashboard() {
       fetchForecast();
     }
   }, [user, selectedSymbol]);
+
+  useEffect(() => {
+    const fetchAllForecasts = async () => {
+      const forecasts = {};
+      await Promise.all(
+        watchlist.map(async (item) => {
+          try {
+            const res = await axios.get(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/v1/forecast/${item.symbol}`,
+              { withCredentials: true }
+            );
+            const { historical = [], forecast = [] } = res.data;
+            const combined = historical.map((h) => ({
+              date: h.date,
+              historical: h.price,
+            }));
+            forecast.forEach((f) => {
+              combined.push({ date: f.date, forecast: f.price });
+            });
+            forecasts[item.symbol] = combined;
+          } catch (err) {
+            console.error(err);
+          }
+        })
+      );
+      setSymbolForecasts(forecasts);
+    };
+    if (user && watchlist.length > 0) {
+      fetchAllForecasts();
+    }
+  }, [user, watchlist]);
 
   useEffect(() => {
     const fetchUnread = async () => {
@@ -170,7 +202,7 @@ function Dashboard() {
           </select>
         </div>
         <h1 className="text-2xl mb-4">
-          {formatSymbol(selectedSymbol)} Price Forecast
+          {formatSymbol(selectedSymbol)} Price Prediction
         </h1>
         {marketInfo && (
           <p className="mb-2 text-sm">
@@ -204,7 +236,7 @@ function Dashboard() {
                   type="monotone"
                   dataKey="forecast"
                   stroke="#82ca9d"
-                  name="Forecast"
+                  name="Prediction"
                   isAnimationActive
                   animationDuration={500}
                 />
@@ -223,9 +255,36 @@ function Dashboard() {
           watchlist.map((item) => (
             <li
               key={item.id}
-              className="p-2 hover:bg-gray-100 transition duration-200 rounded"
+              className="p-2 hover:bg-gray-100 transition duration-200 rounded mb-4"
             >
               {item.symbol}: {item.price}
+              {symbolForecasts[item.symbol] && (
+                <div className="w-full h-48 mt-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={symbolForecasts[item.symbol]}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="date" hide />
+                      <YAxis hide />
+                      <Tooltip />
+                      <Line
+                        type="monotone"
+                        dataKey="historical"
+                        stroke="#8884d8"
+                        name="Historical"
+                        dot={false}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="forecast"
+                        stroke="#82ca9d"
+                        name="Prediction"
+                        dot={false}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                  <p className="text-xs text-gray-500 mt-1">Prediction</p>
+                </div>
+              )}
             </li>
           ))
         )}
