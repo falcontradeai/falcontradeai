@@ -1,4 +1,4 @@
-const { User, Offer, RFQ } = require('../models');
+const { User, Offer, RFQ, sequelize } = require('../models');
 const Stripe = require('stripe');
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
@@ -6,13 +6,76 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 async function getMetrics(req, res) {
   try {
     const userCount = await User.count();
+
     const approvedOffers = await Offer.findAll({ where: { status: 'approved' } });
     const totalRevenue = approvedOffers.reduce(
       (sum, offer) => sum + offer.price * offer.quantity,
       0,
     );
+
     const pendingListings = await Offer.count({ where: { status: 'pending' } });
-    res.json({ userCount, totalRevenue, pendingListings });
+
+    const subscriptions = await stripe.subscriptions.list({
+      status: 'all',
+      limit: 100,
+    });
+    const subscriptionRevenue =
+      subscriptions.data
+        .filter((s) => s.status === 'active')
+        .reduce((sum, s) => {
+          const item = s.items.data[0];
+          const amount = item?.price?.unit_amount ?? 0;
+          const quantity = item?.quantity ?? 1;
+          return sum + amount * quantity;
+        }, 0) / 100;
+
+    const activeRFQs = await RFQ.count({ where: { status: 'approved' } });
+    const activeDeals = approvedOffers.length + activeRFQs;
+
+    const offerAgg = await Offer.findAll({
+      where: { status: 'approved' },
+      attributes: [
+        'symbol',
+        [sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity'],
+        [sequelize.fn('COUNT', sequelize.col('id')), 'listingCount'],
+      ],
+      group: ['symbol'],
+      raw: true,
+    });
+    const rfqAgg = await RFQ.findAll({
+      where: { status: 'approved' },
+      attributes: [
+        'symbol',
+        [sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity'],
+        [sequelize.fn('COUNT', sequelize.col('id')), 'listingCount'],
+      ],
+      group: ['symbol'],
+      raw: true,
+    });
+
+    const commodityMap = {};
+    [...offerAgg, ...rfqAgg].forEach((row) => {
+      const symbol = row.symbol;
+      if (!commodityMap[symbol]) {
+        commodityMap[symbol] = { totalQuantity: 0, listingCount: 0 };
+      }
+      commodityMap[symbol].totalQuantity += Number(row.totalQuantity);
+      commodityMap[symbol].listingCount += Number(row.listingCount);
+    });
+
+    const topCommodities = Object.entries(commodityMap)
+      .map(([symbol, data]) => ({ symbol, ...data }))
+      .sort((a, b) => b.totalQuantity - a.totalQuantity)
+      .slice(0, 5);
+
+    res.json({
+      userCount,
+      totalRevenue,
+      pendingListings,
+      subscriptionRevenue,
+      activeDeals,
+      topCommodities,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
