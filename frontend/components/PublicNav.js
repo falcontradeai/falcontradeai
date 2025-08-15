@@ -4,18 +4,22 @@ import { useRouter } from 'next/router';
 
 export default function PublicNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const router = useRouter();
 
-  const links = [
+  const mainLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/pricing', label: 'Pricing' },
+    { href: '/login', label: 'Login' },
+    { href: '/signup', label: 'Sign Up' },
+  ];
+
+  const resourceLinks = [
     { href: '/faq', label: 'FAQ' },
     { href: '/contact', label: 'Contact' },
     { href: '/privacy', label: 'Privacy' },
     { href: '/terms', label: 'Terms' },
-    { href: '/login', label: 'Login' },
-    { href: '/signup', label: 'Sign Up' },
   ];
 
   const linkClass = (href) =>
@@ -24,7 +28,7 @@ export default function PublicNav() {
       : 'text-gray-700 dark:text-gray-300 hover:text-brand-dark dark:hover:text-brand-light';
 
   return (
-    <nav className="bg-gray-100 dark:bg-gray-800">
+    <nav className="bg-gray-100 dark:bg-gray-800 shadow">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           <div className="text-xl font-bold">
@@ -43,19 +47,41 @@ export default function PublicNav() {
               )}
             </svg>
           </button>
-          <ul className="hidden md:flex space-x-6">
-            {links.map(({ href, label }) => (
+          <ul className="hidden md:flex space-x-6 items-center">
+            {mainLinks.map(({ href, label }) => (
               <li key={href}>
                 <Link href={href} className={`pb-1 ${linkClass(href)}`}>
                   {label}
                 </Link>
               </li>
             ))}
+            <li className="relative">
+              <button
+                onClick={() => setResourcesOpen(!resourcesOpen)}
+                className="pb-1 text-gray-700 dark:text-gray-300 hover:text-brand-dark dark:hover:text-brand-light focus:outline-none"
+              >
+                Resources
+              </button>
+              {resourcesOpen && (
+                <ul className="absolute left-0 mt-2 w-40 bg-white dark:bg-gray-700 rounded shadow-lg py-2">
+                  {resourceLinks.map(({ href, label }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
           </ul>
         </div>
         {isOpen && (
           <ul className="md:hidden pb-4 space-y-2">
-            {links.map(({ href, label }) => (
+            {mainLinks.map(({ href, label }) => (
               <li key={href}>
                 <Link
                   href={href}
@@ -66,6 +92,29 @@ export default function PublicNav() {
                 </Link>
               </li>
             ))}
+            <li>
+              <button
+                onClick={() => setResourcesOpen(!resourcesOpen)}
+                className="w-full text-left text-gray-700 dark:text-gray-300 hover:text-brand-dark dark:hover:text-brand-light"
+              >
+                Resources
+              </button>
+              {resourcesOpen && (
+                <ul className="mt-2 ml-4 space-y-2">
+                  {resourceLinks.map(({ href, label }) => (
+                    <li key={href}>
+                      <Link
+                        href={href}
+                        className={`block ${linkClass(href)}`}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
           </ul>
         )}
       </div>

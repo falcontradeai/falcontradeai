@@ -3,15 +3,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import LineChart from '../components/LineChart';
 import withAuth from '../components/withAuth';
 
 function Dashboard() {
@@ -162,21 +154,18 @@ function Dashboard() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={watchlist}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="symbol" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="price"
-                stroke="#8884d8"
-                isAnimationActive
-                animationDuration={500}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <LineChart
+            className="w-full h-full"
+            labels={watchlist.map((w) => w.symbol)}
+            datasets={[
+              {
+                label: 'Price',
+                data: watchlist.map((w) => w.price),
+                borderColor: '#8884d8',
+                tension: 0.4,
+              },
+            ]}
+          />
         </motion.div>
       )}
       <div className="mt-8">
@@ -218,30 +207,24 @@ function Dashboard() {
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={forecastData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="historical"
-                  stroke="#8884d8"
-                  name="Historical"
-                  isAnimationActive
-                  animationDuration={500}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="forecast"
-                  stroke="#82ca9d"
-                  name="Prediction"
-                  isAnimationActive
-                  animationDuration={500}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <LineChart
+              className="w-full h-full"
+              labels={forecastData.map((d) => d.date)}
+              datasets={[
+                {
+                  label: 'Historical',
+                  data: forecastData.map((d) => d.historical),
+                  borderColor: '#8884d8',
+                  tension: 0.4,
+                },
+                {
+                  label: 'Prediction',
+                  data: forecastData.map((d) => d.forecast),
+                  borderColor: '#82ca9d',
+                  tension: 0.4,
+                },
+              ]}
+            />
           </motion.div>
         )}
       </div>
@@ -260,28 +243,27 @@ function Dashboard() {
               {item.symbol}: {item.price}
               {symbolForecasts[item.symbol] && (
                 <div className="w-full h-48 mt-2">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={symbolForecasts[item.symbol]}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" hide />
-                      <YAxis hide />
-                      <Tooltip />
-                      <Line
-                        type="monotone"
-                        dataKey="historical"
-                        stroke="#8884d8"
-                        name="Historical"
-                        dot={false}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="forecast"
-                        stroke="#82ca9d"
-                        name="Prediction"
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <LineChart
+                    className="w-full h-full"
+                    showLegend={false}
+                    labels={symbolForecasts[item.symbol].map((d) => d.date)}
+                    datasets={[
+                      {
+                        label: 'Historical',
+                        data: symbolForecasts[item.symbol].map((d) => d.historical),
+                        borderColor: '#8884d8',
+                        tension: 0.4,
+                        pointRadius: 0,
+                      },
+                      {
+                        label: 'Prediction',
+                        data: symbolForecasts[item.symbol].map((d) => d.forecast),
+                        borderColor: '#82ca9d',
+                        tension: 0.4,
+                        pointRadius: 0,
+                      },
+                    ]}
+                  />
                   <p className="text-xs text-gray-500 mt-1">Prediction</p>
                 </div>
               )}

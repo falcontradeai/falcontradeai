@@ -9,6 +9,7 @@ export default function ThemeToggle() {
     } else {
       document.documentElement.classList.remove('dark');
     }
+    window.dispatchEvent(new Event('themeChange'));
   }, [isDark]);
 
   return (
