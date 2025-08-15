@@ -123,19 +123,19 @@ function RFQs() {
       <ul>
         {rfqs.map((rfq) => (
           <li key={rfq.id} className="border p-2 mb-2">
-            {rfq.symbol} - {rfq.quantity} - {rfq.status} - {rfq.orderStatus}
+            <div>
+              Commodity: {rfq.symbol} | Quantity: {rfq.quantity} | Location: {rfq.location || '-'}
+            </div>
+            <div>Status: {rfq.status} | Order Status: {rfq.orderStatus}</div>
             <div className="mt-2 space-x-2">
-              <Link
-                href={`/rfqs/${rfq.id}`}
-                className="text-blue-600 underline"
-              >
+              <Link href={`/rfqs/${rfq.id}`} className="text-blue-600 underline">
                 View
               </Link>
               <Link
                 href={`/messages?toUserId=${rfq.userId}&rfqId=${rfq.id}`}
                 className="text-green-600 underline"
               >
-                Contact Buyer
+                Send Offer
               </Link>
             </div>
           </li>

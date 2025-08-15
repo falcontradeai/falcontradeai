@@ -76,6 +76,8 @@ function RFQDetail() {
       <h1 className="text-2xl mb-4">RFQ Details</h1>
       <p>Symbol: {rfq.symbol}</p>
       <p>Quantity: {rfq.quantity}</p>
+      <p>Specifications: {rfq.specs}</p>
+      <p>Delivery Location: {rfq.location}</p>
       <p>Status: {rfq.status}</p>
       <p>Order Status: {rfq.orderStatus}</p>
       <div className="mt-4">

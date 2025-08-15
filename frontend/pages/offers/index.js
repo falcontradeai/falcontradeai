@@ -144,13 +144,16 @@ function Offers() {
       <ul>
         {offers.map((offer) => (
           <li key={offer.id} className="border p-2 mb-2">
-            {offer.symbol} - {offer.price} - {offer.quantity} - {offer.status} -
-            {offer.orderStatus}
+            <div>
+              Commodity: {offer.symbol} | Price: {offer.price} | Quantity: {offer.quantity}
+            </div>
+            <div>
+              Price Tier: {offer.priceTier || '-'} | Location: {offer.location || '-'}
+            </div>
+            <div>Delivery Terms: {offer.deliveryTerms || '-'}</div>
+            <div>Status: {offer.status} | Order Status: {offer.orderStatus}</div>
             <div className="mt-2 space-x-2">
-              <Link
-                href={`/offers/${offer.id}`}
-                className="text-blue-600 underline"
-              >
+              <Link href={`/offers/${offer.id}`} className="text-blue-600 underline">
                 View
               </Link>
               <Link

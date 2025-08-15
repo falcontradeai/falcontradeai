@@ -35,7 +35,7 @@ router.post(
   upload.array('attachments'),
   async (req, res) => {
     try {
-      const { symbol, quantity } = req.body;
+      const { symbol, quantity, specs, location } = req.body;
       const attachments = (req.files || []).map((file) => ({
         filename: file.filename,
         url: `/uploads/${file.filename}`,
@@ -46,6 +46,8 @@ router.post(
         userId: req.user.id,
         symbol,
         quantity,
+        specs,
+        location,
         attachments,
       });
       res.json(rfq);

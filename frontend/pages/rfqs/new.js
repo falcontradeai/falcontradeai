@@ -7,6 +7,8 @@ function NewRFQ() {
   const router = useRouter();
   const [symbol, setSymbol] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [specs, setSpecs] = useState('');
+  const [location, setLocation] = useState('');
   const [files, setFiles] = useState([]);
 
   const handleFileChange = (e) => {
@@ -19,6 +21,8 @@ function NewRFQ() {
       const formData = new FormData();
       formData.append('symbol', symbol);
       formData.append('quantity', quantity);
+      formData.append('specs', specs);
+      formData.append('location', location);
       files.forEach((file) => formData.append('attachments', file));
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/rfqs`, formData, {
         withCredentials: true,
@@ -45,6 +49,18 @@ function NewRFQ() {
           placeholder="Quantity"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
+        />
+        <textarea
+          className="border p-2 w-full"
+          placeholder="Specifications"
+          value={specs}
+          onChange={(e) => setSpecs(e.target.value)}
+        />
+        <input
+          className="border p-2 w-full"
+          placeholder="Delivery Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
         />
         <input type="file" multiple onChange={handleFileChange} />
         <button className="bg-blue-500 text-white px-4 py-2" type="submit">

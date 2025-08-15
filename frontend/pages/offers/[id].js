@@ -77,6 +77,9 @@ function OfferDetail() {
       <p>Symbol: {offer.symbol}</p>
       <p>Price: {offer.price}</p>
       <p>Quantity: {offer.quantity}</p>
+      <p>Price Tier: {offer.priceTier}</p>
+      <p>Location: {offer.location}</p>
+      <p>Delivery Terms: {offer.deliveryTerms}</p>
       <p>Status: {offer.status}</p>
       <p>Order Status: {offer.orderStatus}</p>
       <div className="mt-4">

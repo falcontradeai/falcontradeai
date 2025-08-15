@@ -6,6 +6,8 @@ module.exports = (sequelize) => {
     userId: { type: DataTypes.INTEGER, allowNull: false },
     symbol: { type: DataTypes.STRING, allowNull: false },
     quantity: { type: DataTypes.INTEGER, allowNull: false },
+    specs: { type: DataTypes.TEXT, allowNull: true },
+    location: { type: DataTypes.STRING, allowNull: true },
     status: {
       type: DataTypes.ENUM('pending', 'approved', 'featured', 'rejected'),
       allowNull: false,
