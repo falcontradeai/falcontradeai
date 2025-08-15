@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const { isAdmin, isSubscriber } = require('../middleware/roles');
+const { isAdmin } = require('../middleware/roles');
 const marketDataController = require('../controllers/marketData');
 
 const router = express.Router();
@@ -8,7 +8,6 @@ const router = express.Router();
 router.get(
   '/:commodity',
   auth,
-  isSubscriber,
   auth.requireActiveSubscription,
   marketDataController.getMarketData
 );

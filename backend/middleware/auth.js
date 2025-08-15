@@ -30,7 +30,7 @@ async function auth(req, res, next) {
 function requireActiveSubscription(req, res, next) {
   if (
     req.user &&
-    req.user.role === 'subscriber' &&
+    req.user.role !== 'admin' &&
     req.user.subscriptionStatus !== 'active'
   ) {
     return res

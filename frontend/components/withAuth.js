@@ -27,7 +27,7 @@ export default function withAuth(Component, requiredRole) {
       } else if (requiredRole && user.role !== requiredRole) {
         router.replace(getDashboard(user.role));
       } else if (
-        user.role === 'subscriber' &&
+        user.role !== 'admin' &&
         user.subscriptionStatus !== 'active'
       ) {
         router.replace('/pricing');
@@ -38,7 +38,7 @@ export default function withAuth(Component, requiredRole) {
       loading ||
       !user ||
       (requiredRole && user.role !== requiredRole) ||
-      (user.role === 'subscriber' && user.subscriptionStatus !== 'active')
+      (user.role !== 'admin' && user.subscriptionStatus !== 'active')
     ) {
       return null;
     }
