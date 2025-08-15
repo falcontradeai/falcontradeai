@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import withAuth from '../components/withAuth';
 
 function Profile() {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
   const [companyName, setCompanyName] = useState('');
   const [companyWebsite, setCompanyWebsite] = useState('');
   const [logo, setLogo] = useState(null);
@@ -50,6 +50,19 @@ function Profile() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/payments/cancel-subscription`,
+        {},
+        { withCredentials: true }
+      );
+      login({ ...user, role: 'buyer', subscriptionStatus: 'canceled' });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">Profile</h1>
@@ -78,6 +91,14 @@ function Profile() {
           Save
         </button>
       </form>
+      {user?.role === 'subscriber' && (
+        <button
+          onClick={handleCancelSubscription}
+          className="mt-4 bg-red-500 text-white px-4 py-2"
+        >
+          Cancel Subscription
+        </button>
+      )}
     </div>
   );
 }
