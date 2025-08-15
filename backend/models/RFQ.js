@@ -11,6 +11,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 'pending',
     },
+    attachments: { type: DataTypes.JSON, allowNull: true },
   });
   return RFQ;
 };
