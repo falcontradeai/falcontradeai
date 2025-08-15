@@ -45,15 +45,36 @@ router.post('/', auth, upload.array('attachments'), async (req, res) => {
 
 // Get all messages for the authenticated user
 router.get('/', auth, async (req, res) => {
+  const { offerId, rfqId } = req.query;
+  const where = {
+    [Op.or]: [
+      { fromUserId: req.user.id },
+      { toUserId: req.user.id },
+    ],
+  };
+  if (offerId) where.offerId = offerId;
+  if (rfqId) where.rfqId = rfqId;
+
   const messages = await Message.findAll({
-    where: {
-      [Op.or]: [
-        { fromUserId: req.user.id },
-        { toUserId: req.user.id },
-      ],
-    },
+    where,
+    order: [['createdAt', 'ASC']],
   });
-  res.json(messages);
+
+  if (offerId || rfqId) {
+    return res.json(messages);
+  }
+
+  const grouped = messages.reduce((acc, msg) => {
+    const key = msg.offerId
+      ? `offer-${msg.offerId}`
+      : msg.rfqId
+      ? `rfq-${msg.rfqId}`
+      : `direct-${[msg.fromUserId, msg.toUserId].sort().join('-')}`;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(msg);
+    return acc;
+  }, {});
+  res.json(grouped);
 });
 
 module.exports = router;

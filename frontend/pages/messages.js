@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
 import withAuth from '../components/withAuth';
+import { useRouter } from 'next/router';
 
 function Messages() {
+  const router = useRouter();
   const { user } = useAuth();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState({});
   const [toUserId, setToUserId] = useState('');
+  const [offerId, setOfferId] = useState('');
+  const [rfqId, setRfqId] = useState('');
   const [content, setContent] = useState('');
   const [files, setFiles] = useState([]);
 
@@ -27,6 +31,12 @@ function Messages() {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (router.query.toUserId) setToUserId(router.query.toUserId);
+    if (router.query.offerId) setOfferId(router.query.offerId);
+    if (router.query.rfqId) setRfqId(router.query.rfqId);
+  }, [router.query]);
+
   const handleFileChange = (e) => {
     setFiles(Array.from(e.target.files));
   };
@@ -37,6 +47,8 @@ function Messages() {
       const formData = new FormData();
       formData.append('toUserId', toUserId);
       formData.append('content', content);
+      if (offerId) formData.append('offerId', offerId);
+      if (rfqId) formData.append('rfqId', rfqId);
       files.forEach((file) => formData.append('attachments', file));
       await axios.post('http://localhost:5000/api/v1/messages', formData, {
         withCredentials: true,
@@ -62,6 +74,18 @@ function Messages() {
           value={toUserId}
           onChange={(e) => setToUserId(e.target.value)}
         />
+        <input
+          className="border p-2 w-full"
+          placeholder="Offer ID"
+          value={offerId}
+          onChange={(e) => setOfferId(e.target.value)}
+        />
+        <input
+          className="border p-2 w-full"
+          placeholder="RFQ ID"
+          value={rfqId}
+          onChange={(e) => setRfqId(e.target.value)}
+        />
         <textarea
           className="border p-2 w-full"
           placeholder="Message"
@@ -74,30 +98,35 @@ function Messages() {
         </button>
       </form>
       <div className="space-y-4">
-        {messages.map((msg) => (
-          <div key={msg.id} className="border p-2">
-            <p>{msg.content}</p>
-            {msg.attachments &&
-              msg.attachments.map((att, idx) => (
-                att.mimetype && att.mimetype.startsWith('image/') ? (
-                  <img
-                    key={idx}
-                    src={`http://localhost:5000${att.url}`}
-                    alt={att.originalname}
-                    className="max-w-xs mt-2"
-                  />
-                ) : (
-                  <a
-                    key={idx}
-                    href={`http://localhost:5000${att.url}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline block mt-2"
-                  >
-                    {att.originalname || att.filename}
-                  </a>
-                )
-              ))}
+        {Object.entries(messages).map(([key, msgs]) => (
+          <div key={key} className="border p-2">
+            <h2 className="font-bold mb-2">{key}</h2>
+            {msgs.map((msg) => (
+              <div key={msg.id} className="border p-2 mb-2">
+                <p>{msg.content}</p>
+                {msg.attachments &&
+                  msg.attachments.map((att, idx) => (
+                    att.mimetype && att.mimetype.startsWith('image/') ? (
+                      <img
+                        key={idx}
+                        src={`http://localhost:5000${att.url}`}
+                        alt={att.originalname}
+                        className="max-w-xs mt-2"
+                      />
+                    ) : (
+                      <a
+                        key={idx}
+                        href={`http://localhost:5000${att.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline block mt-2"
+                      >
+                        {att.originalname || att.filename}
+                      </a>
+                    )
+                  ))}
+              </div>
+            ))}
           </div>
         ))}
       </div>
