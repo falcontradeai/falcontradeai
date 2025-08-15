@@ -8,6 +8,7 @@ node_modules/
 .env
 .env.*
 !backend/.env.example
+!frontend/.env.example
 
 # Local database
 backend/database.sqlite

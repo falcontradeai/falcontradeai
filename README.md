@@ -17,7 +17,7 @@ Deploy the Express API to [Render](https://render.com):
    - `STRIPE_SECRET_KEY`
    - `STRIPE_WEBHOOK_SECRET`
    - `STRIPE_PRICE_ID`
-   - `FRONTEND_URL`
+   - `FRONTEND_URL` – base URL of the frontend application
    - `JWT_SECRET`
    - `ALPHAVANTAGE_KEY`
    - `PORT` (optional)
@@ -27,7 +27,7 @@ Deploy the Next.js app to [Vercel](https://vercel.com):
 1. Import the repository and select the `frontend` directory.
 2. Set the build command to `npm run build` and the output directory to `.next`.
 3. Configure the following environment variables:
-   - `NEXT_PUBLIC_API_URL`
+   - `NEXT_PUBLIC_API_URL` – base URL of the backend API
    - `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`
 
 Environment variables on Vercel must be prefixed with `NEXT_PUBLIC_` to be accessible in the browser.

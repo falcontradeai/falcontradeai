@@ -17,7 +17,7 @@ const plans = [
 
 export default function Pricing() {
   const handleSubscribe = (plan) => {
-    window.location.href = `http://localhost:5000/api/v1/payments/create-checkout-session?plan=${plan}`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/payments/create-checkout-session?plan=${plan}`;
   };
 
   return (

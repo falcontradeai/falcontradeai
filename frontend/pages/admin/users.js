@@ -7,7 +7,7 @@ function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/admin/users', {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users`, {
         withCredentials: true,
       });
       setUsers(res.data);
@@ -35,7 +35,7 @@ function AdminUsers() {
   const handleUpdate = async (user) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/v1/admin/users/${user.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users/${user.id}`,
         {
           role: user.role,
           subscriptionStatus: user.subscriptionStatus,
@@ -51,7 +51,7 @@ function AdminUsers() {
   const block = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/admin/users/${id}/block`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users/${id}/block`,
         {},
         { withCredentials: true },
       );
@@ -64,7 +64,7 @@ function AdminUsers() {
   const approve = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/admin/users/${id}/approve`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users/${id}/approve`,
         {},
         { withCredentials: true },
       );

@@ -7,7 +7,7 @@ function AdminOffers() {
 
   const fetchOffers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/admin/listings', {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/listings`, {
         withCredentials: true,
       });
       setOffers(res.data.offers || res.data);
@@ -23,7 +23,7 @@ function AdminOffers() {
   const approve = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/admin/listings/${id}/approve`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/listings/${id}/approve`,
         {},
         { withCredentials: true }
       );
@@ -36,7 +36,7 @@ function AdminOffers() {
   const remove = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/v1/admin/listings/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/listings/${id}`,
         { withCredentials: true }
       );
       fetchOffers();
@@ -48,7 +48,7 @@ function AdminOffers() {
   const reject = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/admin/listings/${id}/reject`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/listings/${id}/reject`,
         {},
         { withCredentials: true }
       );

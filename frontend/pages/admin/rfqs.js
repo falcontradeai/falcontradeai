@@ -7,7 +7,7 @@ function AdminRFQs() {
 
   const fetchRFQs = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/admin/rfqs', {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/rfqs`, {
         withCredentials: true,
       });
       setRfqs(res.data);
@@ -23,7 +23,7 @@ function AdminRFQs() {
   const approve = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/admin/rfqs/${id}/approve`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/rfqs/${id}/approve`,
         {},
         { withCredentials: true }
       );
@@ -36,7 +36,7 @@ function AdminRFQs() {
   const reject = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/v1/admin/rfqs/${id}/reject`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/rfqs/${id}/reject`,
         {},
         { withCredentials: true }
       );

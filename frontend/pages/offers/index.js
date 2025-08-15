@@ -29,7 +29,7 @@ function Offers() {
         params.sortBy = sortBy;
         params.order = order;
       }
-      const res = await axios.get('http://localhost:5000/api/v1/offers', {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/offers`, {
         params,
         withCredentials: true,
       });

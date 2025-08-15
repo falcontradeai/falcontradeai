@@ -22,7 +22,7 @@ function NewOffer() {
       formData.append('price', price);
       formData.append('quantity', quantity);
       files.forEach((file) => formData.append('attachments', file));
-      await axios.post('http://localhost:5000/api/v1/offers', formData, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/offers`, formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
