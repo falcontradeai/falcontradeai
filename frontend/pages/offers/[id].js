@@ -27,7 +27,7 @@ function OfferDetail() {
   const fetchMessages = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages?offerId=${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages?listingId=${id}`,
         { withCredentials: true }
       );
       setMessages(res.data);
@@ -53,7 +53,7 @@ function OfferDetail() {
       const formData = new FormData();
       formData.append('toUserId', offer.userId);
       formData.append('content', content);
-      formData.append('offerId', id);
+      formData.append('listingId', id);
       files.forEach((file) => formData.append('attachments', file));
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages`, formData, {
         withCredentials: true,

@@ -157,7 +157,7 @@ function Offers() {
                 View
               </Link>
               <Link
-                href={`/messages?toUserId=${offer.userId}&offerId=${offer.id}`}
+                href={`/messages?toUserId=${offer.userId}&listingId=${offer.id}`}
                 className="text-green-600 underline"
               >
                 Contact Seller

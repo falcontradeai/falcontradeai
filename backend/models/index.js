@@ -25,8 +25,8 @@ Message.belongsTo(User, { as: 'toUser', foreignKey: 'toUserId' });
 User.hasMany(WatchlistItem, { foreignKey: 'userId' });
 WatchlistItem.belongsTo(User, { foreignKey: 'userId' });
 
-Offer.hasMany(Message, { foreignKey: 'offerId' });
-Message.belongsTo(Offer, { foreignKey: 'offerId' });
+Offer.hasMany(Message, { foreignKey: 'listingId' });
+Message.belongsTo(Offer, { foreignKey: 'listingId' });
 
 RFQ.hasMany(Message, { foreignKey: 'rfqId' });
 Message.belongsTo(RFQ, { foreignKey: 'rfqId' });
