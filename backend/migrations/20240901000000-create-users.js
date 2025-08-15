@@ -10,6 +10,11 @@ module.exports = {
         type: Sequelize.ENUM('buyer', 'seller', 'admin', 'subscriber'),
         allowNull: false,
       },
+      status: {
+        type: Sequelize.ENUM('active', 'blocked', 'pending'),
+        defaultValue: 'pending',
+        allowNull: false,
+      },
       subscriptionStatus: { type: Sequelize.STRING, defaultValue: 'inactive' },
       verificationToken: { type: Sequelize.STRING },
       resetToken: { type: Sequelize.STRING },

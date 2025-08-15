@@ -33,9 +33,38 @@ async function updateUser(req, res) {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    const { role, subscriptionStatus } = req.body;
+    const { role, subscriptionStatus, status } = req.body;
     if (role) user.role = role;
     if (subscriptionStatus) user.subscriptionStatus = subscriptionStatus;
+    if (status) user.status = status;
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function blockUser(req, res) {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.status = 'blocked';
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function approveUser(req, res) {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.status = 'active';
     await user.save();
     res.json(user);
   } catch (err) {
@@ -145,6 +174,8 @@ module.exports = {
   getMetrics,
   getUsers,
   updateUser,
+  blockUser,
+  approveUser,
   deleteUser,
   getListings,
   approveListing,

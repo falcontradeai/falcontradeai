@@ -48,13 +48,41 @@ function AdminUsers() {
     }
   };
 
+  const block = async (id) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/api/v1/admin/users/${id}/block`,
+        {},
+        { withCredentials: true },
+      );
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const approve = async (id) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/api/v1/admin/users/${id}/approve`,
+        {},
+        { withCredentials: true },
+      );
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">Manage Users</h1>
       <ul>
         {users.map((user) => (
           <li key={user.id} className="border p-2 mb-2 flex space-x-2 items-center">
-            <span className="flex-1">{user.username}</span>
+            <span className="flex-1">
+              {user.username} - {user.status}
+            </span>
             <select
               className="border p-1"
               value={user.role}
@@ -81,6 +109,22 @@ function AdminUsers() {
             >
               Update
             </button>
+            {user.status !== 'blocked' && (
+              <button
+                className="bg-red-500 text-white px-2 py-1"
+                onClick={() => block(user.id)}
+              >
+                Block
+              </button>
+            )}
+            {user.status !== 'active' && (
+              <button
+                className="bg-green-500 text-white px-2 py-1"
+                onClick={() => approve(user.id)}
+              >
+                Approve
+              </button>
+            )}
           </li>
         ))}
       </ul>
