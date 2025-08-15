@@ -9,12 +9,18 @@ function RFQs() {
   const [status, setStatus] = useState('');
   const [sortBy, setSortBy] = useState('');
   const [order, setOrder] = useState('ASC');
+  const [minQuantity, setMinQuantity] = useState('');
+  const [maxQuantity, setMaxQuantity] = useState('');
+  const [location, setLocation] = useState('');
 
   const fetchRfqs = async () => {
     try {
       const params = {};
       if (commodity) params.commodity = commodity;
       if (status) params.status = status;
+      if (minQuantity) params.minQuantity = minQuantity;
+      if (maxQuantity) params.maxQuantity = maxQuantity;
+      if (location) params.location = location;
       if (sortBy) {
         params.sortBy = sortBy;
         params.order = order;
@@ -48,6 +54,28 @@ function RFQs() {
           value={commodity}
           onChange={(e) => setCommodity(e.target.value)}
         />
+        <input
+          className="border p-2 w-full"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <div className="flex space-x-2">
+          <input
+            className="border p-2 w-full"
+            type="number"
+            placeholder="Min Quantity"
+            value={minQuantity}
+            onChange={(e) => setMinQuantity(e.target.value)}
+          />
+          <input
+            className="border p-2 w-full"
+            type="number"
+            placeholder="Max Quantity"
+            value={maxQuantity}
+            onChange={(e) => setMaxQuantity(e.target.value)}
+          />
+        </div>
         <select
           className="border p-2 w-full"
           value={status}
