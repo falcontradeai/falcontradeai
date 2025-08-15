@@ -1,5 +1,6 @@
 const { MarketData } = require('../models');
 const { movingAverageForecast } = require('../utils/forecast');
+const cron = require('node-cron');
 
 const SOURCES = [
   {
@@ -15,7 +16,7 @@ const SOURCES = [
           changePercent: item.pcXau,
         };
       } catch (err) {
-        console.error('Failed to fetch gold data', err);
+        console.warn('Failed to fetch gold data', err);
         throw err;
       }
     },
@@ -33,7 +34,7 @@ const SOURCES = [
           changePercent: item.pcXag,
         };
       } catch (err) {
-        console.error('Failed to fetch silver data', err);
+        console.warn('Failed to fetch silver data', err);
         throw err;
       }
     },
@@ -58,7 +59,7 @@ const SOURCES = [
           date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
         };
       } catch (err) {
-        console.error('Failed to fetch WTI data', err);
+        console.warn('Failed to fetch WTI data', err);
         throw err;
       }
     },
@@ -83,7 +84,7 @@ const SOURCES = [
           date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
         };
       } catch (err) {
-        console.error('Failed to fetch corn data', err);
+        console.warn('Failed to fetch corn data', err);
         throw err;
       }
     },
@@ -144,8 +145,7 @@ async function refreshMarketData() {
 
 function scheduleMarketDataRefresh() {
   refreshMarketData();
-  const fifteenMinutes = 15 * 60 * 1000;
-  setInterval(refreshMarketData, fifteenMinutes);
+  cron.schedule('*/15 * * * *', refreshMarketData);
 }
 
 module.exports = { refreshMarketData, scheduleMarketDataRefresh };
