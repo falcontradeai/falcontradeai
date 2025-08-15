@@ -46,6 +46,14 @@ app.get('/', (req, res) => {
   res.send('FalconTrade Backend is running');
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 sequelize.sync().then(async () => {
   if (await WatchlistItem.count() === 0) {
