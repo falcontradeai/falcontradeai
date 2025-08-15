@@ -124,6 +124,20 @@ function RFQs() {
         {rfqs.map((rfq) => (
           <li key={rfq.id} className="border p-2 mb-2">
             {rfq.symbol} - {rfq.quantity} - {rfq.status}
+            <div className="mt-2 space-x-2">
+              <Link
+                href={`/rfqs/${rfq.id}`}
+                className="text-blue-600 underline"
+              >
+                View
+              </Link>
+              <Link
+                href={`/messages?toUserId=${rfq.userId}&rfqId=${rfq.id}`}
+                className="text-green-600 underline"
+              >
+                Contact Buyer
+              </Link>
+            </div>
           </li>
         ))}
       </ul>

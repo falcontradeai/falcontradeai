@@ -1,0 +1,125 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { useAuth } from '../../contexts/AuthContext';
+import withAuth from '../../components/withAuth';
+
+function RFQDetail() {
+  const router = useRouter();
+  const { id } = router.query;
+  const { user } = useAuth();
+  const [rfq, setRfq] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [content, setContent] = useState('');
+  const [files, setFiles] = useState([]);
+
+  const fetchRfq = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/v1/rfqs/${id}`, {
+        withCredentials: true,
+      });
+      setRfq(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchMessages = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/v1/messages?rfqId=${id}`,
+        { withCredentials: true }
+      );
+      setMessages(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchRfq();
+      fetchMessages();
+    }
+  }, [id]);
+
+  const handleFileChange = (e) => {
+    setFiles(Array.from(e.target.files));
+  };
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('toUserId', rfq.userId);
+      formData.append('content', content);
+      formData.append('rfqId', id);
+      files.forEach((file) => formData.append('attachments', file));
+      await axios.post('http://localhost:5000/api/v1/messages', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setContent('');
+      setFiles([]);
+      fetchMessages();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (!rfq) return <div className="p-4">Loading...</div>;
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl mb-4">RFQ Details</h1>
+      <p>Symbol: {rfq.symbol}</p>
+      <p>Quantity: {rfq.quantity}</p>
+      <div className="mt-4">
+        <h2 className="text-xl mb-2">Conversation</h2>
+        {messages.map((msg) => (
+          <div key={msg.id} className="border p-2 mb-2">
+            <p>{msg.content}</p>
+            {msg.attachments &&
+              msg.attachments.map((att, idx) => (
+                att.mimetype && att.mimetype.startsWith('image/') ? (
+                  <img
+                    key={idx}
+                    src={`http://localhost:5000${att.url}`}
+                    alt={att.originalname}
+                    className="max-w-xs mt-2"
+                  />
+                ) : (
+                  <a
+                    key={idx}
+                    href={`http://localhost:5000${att.url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline block mt-2"
+                  >
+                    {att.originalname || att.filename}
+                  </a>
+                )
+              ))}
+          </div>
+        ))}
+        <form onSubmit={sendMessage} className="mt-4 space-y-2">
+          <textarea
+            className="border p-2 w-full"
+            placeholder="Message"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <input type="file" multiple onChange={handleFileChange} />
+          <button className="bg-blue-500 text-white px-4 py-2" type="submit">
+            Send
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default withAuth(RFQDetail);
+
