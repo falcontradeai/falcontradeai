@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import {
   LineChart,
@@ -20,11 +21,14 @@ function Dashboard() {
   const [marketInfo, setMarketInfo] = useState(null);
   const [selectedSymbol, setSelectedSymbol] = useState('gold');
   const [symbols, setSymbols] = useState([]);
+  const [loadingWatchlist, setLoadingWatchlist] = useState(true);
+  const [loadingForecast, setLoadingForecast] = useState(true);
 
   const formatSymbol = (sym) => sym ? sym.charAt(0).toUpperCase() + sym.slice(1) : '';
 
   useEffect(() => {
     const fetchInitialData = async () => {
+      setLoadingWatchlist(true);
       try {
         const [watchlistRes, newsRes, symbolsRes] = await Promise.all([
           axios.get('http://localhost:5000/api/v1/watchlist', {
@@ -42,6 +46,8 @@ function Dashboard() {
         setSymbols(symbolsRes.data || []);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoadingWatchlist(false);
       }
     };
     if (user) {
@@ -51,6 +57,7 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchForecast = async () => {
+      setLoadingForecast(true);
       try {
         const forecastRes = await axios.get(
           `http://localhost:5000/api/v1/forecast/${selectedSymbol}`,
@@ -72,6 +79,8 @@ function Dashboard() {
         setForecastData(combined);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoadingForecast(false);
       }
     };
     if (user) {
@@ -82,17 +91,31 @@ function Dashboard() {
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">Watchlist Prices</h1>
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
-          <LineChart data={watchlist}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="symbol" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="price" stroke="#8884d8" />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      {loadingWatchlist ? (
+        <div className="w-full h-72 md:h-96 bg-gray-200 animate-pulse rounded" />
+      ) : (
+        <motion.div
+          className="w-full h-72 md:h-96"
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={watchlist}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="symbol" />
+              <YAxis />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="price"
+                stroke="#8884d8"
+                isAnimationActive
+                animationDuration={500}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </motion.div>
+      )}
       <div className="mt-8">
         <div className="mb-4">
           <label htmlFor="symbol-select" className="mr-2">
@@ -102,7 +125,7 @@ function Dashboard() {
             id="symbol-select"
             value={selectedSymbol}
             onChange={(e) => setSelectedSymbol(e.target.value)}
-            className="border p-1"
+            className="border p-1 transition duration-200"
           >
             {symbols.length > 0 ? (
               symbols.map((sym) => (
@@ -120,45 +143,69 @@ function Dashboard() {
         </h1>
         {marketInfo && (
           <p className="mb-2 text-sm">
-            Category: {marketInfo.category} | Last Updated:{' '}
+            Category: {marketInfo.category} | Last Updated{' '}
             {new Date(marketInfo.lastUpdated).toLocaleString()}
           </p>
         )}
-        <div style={{ width: '100%', height: 300 }}>
-          <ResponsiveContainer>
-            <LineChart data={forecastData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="historical"
-                stroke="#8884d8"
-                name="Historical"
-              />
-              <Line
-                type="monotone"
-                dataKey="forecast"
-                stroke="#82ca9d"
-                name="Forecast"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        {loadingForecast ? (
+          <div className="w-full h-72 md:h-96 bg-gray-200 animate-pulse rounded" />
+        ) : (
+          <motion.div
+            className="w-full h-72 md:h-96"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={forecastData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="historical"
+                  stroke="#8884d8"
+                  name="Historical"
+                  isAnimationActive
+                  animationDuration={500}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="forecast"
+                  stroke="#82ca9d"
+                  name="Forecast"
+                  isAnimationActive
+                  animationDuration={500}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </motion.div>
+        )}
       </div>
       <h2 className="text-xl mt-8 mb-2">Watchlist Items</h2>
       <ul>
-        {watchlist.map((item) => (
-          <li key={item.id}>
-            {item.symbol}: {item.price}
-          </li>
-        ))}
+        {loadingWatchlist ? (
+          <div className="flex justify-center py-4">
+            <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          watchlist.map((item) => (
+            <li
+              key={item.id}
+              className="p-2 hover:bg-gray-100 transition duration-200 rounded"
+            >
+              {item.symbol}: {item.price}
+            </li>
+          ))
+        )}
       </ul>
       <h2 className="text-xl mt-8 mb-2">Latest News</h2>
       <ul>
         {news.map((item) => (
-          <li key={item.id}>
+          <li
+            key={item.id}
+            className="p-2 hover:bg-gray-100 transition duration-200 rounded"
+          >
             <strong>{item.title}</strong>
             <p>{item.content}</p>
           </li>
