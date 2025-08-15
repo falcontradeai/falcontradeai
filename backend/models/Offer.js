@@ -12,6 +12,11 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 'pending',
     },
+    orderStatus: {
+      type: DataTypes.ENUM('pending', 'shipped', 'completed'),
+      allowNull: false,
+      defaultValue: 'pending',
+    },
     attachments: { type: DataTypes.JSON, allowNull: true },
   });
   return Offer;

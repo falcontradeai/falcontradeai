@@ -139,5 +139,23 @@ router.post('/:id/feature', auth, isAdmin, async (req, res) => {
   res.json(rfq);
 });
 
+// Update order status (owner only)
+router.post('/:id/status', auth, async (req, res) => {
+  const { orderStatus } = req.body;
+  if (!['pending', 'shipped', 'completed'].includes(orderStatus)) {
+    return res.status(400).json({ message: 'Invalid order status' });
+  }
+  const rfq = await RFQ.findByPk(req.params.id);
+  if (!rfq) {
+    return res.status(404).json({ message: 'RFQ not found' });
+  }
+  if (rfq.userId !== req.user.id) {
+    return res.status(403).json({ message: 'Not authorized' });
+  }
+  rfq.orderStatus = orderStatus;
+  await rfq.save();
+  res.json(rfq);
+});
+
 module.exports = router;
 

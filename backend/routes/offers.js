@@ -148,5 +148,23 @@ router.post('/:id/feature', auth, isAdmin, async (req, res) => {
   res.json(offer);
 });
 
+// Update order status (owner only)
+router.post('/:id/status', auth, async (req, res) => {
+  const { orderStatus } = req.body;
+  if (!['pending', 'shipped', 'completed'].includes(orderStatus)) {
+    return res.status(400).json({ message: 'Invalid order status' });
+  }
+  const offer = await Offer.findByPk(req.params.id);
+  if (!offer) {
+    return res.status(404).json({ message: 'Offer not found' });
+  }
+  if (offer.userId !== req.user.id) {
+    return res.status(403).json({ message: 'Not authorized' });
+  }
+  offer.orderStatus = orderStatus;
+  await offer.save();
+  res.json(offer);
+});
+
 module.exports = router;
 

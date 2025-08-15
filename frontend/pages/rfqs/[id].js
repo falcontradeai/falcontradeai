@@ -76,6 +76,8 @@ function RFQDetail() {
       <h1 className="text-2xl mb-4">RFQ Details</h1>
       <p>Symbol: {rfq.symbol}</p>
       <p>Quantity: {rfq.quantity}</p>
+      <p>Status: {rfq.status}</p>
+      <p>Order Status: {rfq.orderStatus}</p>
       <div className="mt-4">
         <h2 className="text-xl mb-2">Conversation</h2>
         {messages.map((msg) => (
