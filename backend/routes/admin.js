@@ -5,6 +5,8 @@ const {
   getMetrics,
   getUsers,
   updateUser,
+  blockUser,
+  approveUser,
   deleteUser,
   getListings,
   approveListing,
@@ -20,6 +22,8 @@ const router = express.Router();
 router.get('/metrics', auth, isAdmin, getMetrics);
 router.get('/users', auth, isAdmin, getUsers);
 router.put('/users/:id', auth, isAdmin, updateUser);
+router.post('/users/:id/block', auth, isAdmin, blockUser);
+router.post('/users/:id/approve', auth, isAdmin, approveUser);
 router.delete('/users/:id', auth, isAdmin, deleteUser);
 router.get('/listings', auth, isAdmin, getListings);
 router.post('/listings/:id/approve', auth, isAdmin, approveListing);
