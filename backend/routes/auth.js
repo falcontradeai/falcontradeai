@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
+const { Op } = require('sequelize');
 const { User } = require('../models');
 
 const router = express.Router();
@@ -137,7 +138,9 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
       return res.status(400).json({ message: 'No user found with that email' });
     }
     const resetToken = crypto.randomBytes(32).toString('hex');
-    user.resetToken = resetToken;
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.resetToken = hashedToken;
+    user.resetTokenExpires = new Date(Date.now() + 3600000);
     await user.save();
     try {
       await transporter.sendMail({
@@ -158,12 +161,22 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
 router.post('/reset-password', authLimiter, async (req, res) => {
   const { token, password } = req.body;
   try {
-    const user = await User.findOne({ where: { resetToken: token } });
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
+    const user = await User.findOne({
+      where: {
+        resetToken: hashedToken,
+        resetTokenExpires: { [Op.gt]: new Date() },
+      },
+    });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid token' });
+      return res.status(400).json({ message: 'Invalid or expired token' });
     }
     user.password = password;
     user.resetToken = null;
+    user.resetTokenExpires = null;
     await user.save();
     res.json({ message: 'Password updated' });
   } catch (err) {
