@@ -4,6 +4,7 @@ const multer = require('multer');
 const auth = require('../middleware/auth');
 const { isAdmin, isSubscriber } = require('../middleware/roles');
 const { Offer } = require('../models');
+const { Op } = require('sequelize');
 
 const router = express.Router();
 
@@ -51,10 +52,42 @@ router.post(
 
 // Get all offers
 router.get('/', auth, isSubscriber, auth.requireActiveSubscription, async (req, res) => {
-  const { commodity, status, sortBy, order } = req.query;
+  const {
+    commodity,
+    status,
+    sortBy,
+    order,
+    minPrice,
+    maxPrice,
+    minQuantity,
+    maxQuantity,
+    location,
+  } = req.query;
+
   const where = {};
-  if (commodity) where.symbol = commodity;
+
+  if (commodity) {
+    where.symbol = { [Op.iLike]: `%${commodity}%` };
+  }
+
   if (status) where.status = status;
+
+  if (location) {
+    where.location = { [Op.iLike]: `%${location}%` };
+  }
+
+  if (minPrice || maxPrice) {
+    where.price = {};
+    if (minPrice) where.price[Op.gte] = parseFloat(minPrice);
+    if (maxPrice) where.price[Op.lte] = parseFloat(maxPrice);
+  }
+
+  if (minQuantity || maxQuantity) {
+    where.quantity = {};
+    if (minQuantity) where.quantity[Op.gte] = parseInt(minQuantity, 10);
+    if (maxQuantity) where.quantity[Op.lte] = parseInt(maxQuantity, 10);
+  }
+
   const options = { where };
   if (sortBy) {
     options.order = [
