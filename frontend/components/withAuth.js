@@ -15,6 +15,8 @@ export default function withAuth(Component, requiredRole) {
           return '/seller/dashboard';
         case 'admin':
           return '/admin';
+        case 'subscriber':
+          return '/dashboard';
         default:
           return '/';
       }

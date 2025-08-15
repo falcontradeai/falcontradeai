@@ -104,5 +104,5 @@ function Offers() {
   );
 }
 
-export default withAuth(Offers);
+export default withAuth(Offers, 'subscriber');
 

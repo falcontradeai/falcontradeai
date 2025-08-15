@@ -55,5 +55,5 @@ function NewRFQ() {
   );
 }
 
-export default withAuth(NewRFQ);
+export default withAuth(NewRFQ, 'subscriber');
 

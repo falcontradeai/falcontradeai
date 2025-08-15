@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 export default function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -12,7 +11,7 @@ export default function Signup() {
     const res = await fetch('http://localhost:5000/api/v1/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, role }),
+      body: JSON.stringify({ username, password, role: 'subscriber' }),
     });
     if (res.ok) {
       router.push('/login');
@@ -30,10 +29,6 @@ export default function Signup() {
       <div>
         <label>Password:</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
-      <div>
-        <label>Role:</label>
-        <input value={role} onChange={(e) => setRole(e.target.value)} />
       </div>
       <button type="submit">Signup</button>
     </form>

@@ -26,13 +26,13 @@ const transporter = nodemailer.createTransport({
 });
 
 router.post('/signup', authLimiter, async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password } = req.body;
   try {
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const user = await User.create({
       username,
       password,
-      role,
+      role: 'subscriber',
       verificationToken,
     });
 
@@ -167,6 +167,15 @@ router.post('/reset-password', authLimiter, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+  res.json({ message: 'Logged out' });
 });
 
 module.exports = router;

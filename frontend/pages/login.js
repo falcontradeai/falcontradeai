@@ -18,7 +18,8 @@ export default function Login() {
         { withCredentials: true }
       );
       login(res.data);
-      router.push('/');
+      const dest = res.data.role === 'admin' ? '/admin' : '/dashboard';
+      router.push(dest);
     } catch (err) {
       if (err.response && err.response.status === 403) {
         alert(err.response.data.message);

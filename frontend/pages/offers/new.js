@@ -63,5 +63,5 @@ function NewOffer() {
   );
 }
 
-export default withAuth(NewOffer);
+export default withAuth(NewOffer, 'subscriber');
 

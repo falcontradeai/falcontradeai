@@ -103,5 +103,5 @@ function RFQs() {
   );
 }
 
-export default withAuth(RFQs);
+export default withAuth(RFQs, 'subscriber');
 

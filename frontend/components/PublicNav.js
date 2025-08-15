@@ -7,7 +7,6 @@ export default function PublicNav() {
       <Link href="/about">About</Link>
       <Link href="/pricing">Pricing</Link>
       <Link href="/faq">FAQ</Link>
-      <Link href="/contact">Contact</Link>
       <Link href="/login">Login</Link>
       <Link href="/signup">Sign Up</Link>
     </nav>

@@ -16,7 +16,10 @@ export default function Home() {
           <Link href="/faq">Read our FAQ</Link>
         </li>
         <li>
-          <Link href="/contact">Contact us</Link>
+          <Link href="/privacy">Privacy Policy</Link>
+        </li>
+        <li>
+          <Link href="/terms">Terms of Service</Link>
         </li>
       </ul>
     </div>

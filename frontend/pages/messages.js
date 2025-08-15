@@ -105,4 +105,4 @@ function Messages() {
   );
 }
 
-export default withAuth(Messages);
+export default withAuth(Messages, 'subscriber');
