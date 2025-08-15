@@ -16,6 +16,7 @@ const newsRoutes = require('./routes/news');
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/users');
 const forecastRoutes = require('./routes/forecast');
+const contactRoutes = require('./routes/contact');
 const stripeWebhook = require('./webhooks/stripe');
 
 const app = express();
@@ -33,11 +34,12 @@ app.use('/api/v1/rfqs', rfqRoutes);
 app.use('/api/v1/market-data', marketDataRoutes);
 app.use('/api/v1/forecast', forecastRoutes);
 app.use('/api/v1/messages', messageRoutes);
-app.use('/api/v1/payments', paymentRoutes);
-app.use('/api/v1/watchlist', watchlistRoutes);
-app.use('/api/v1/news', newsRoutes);
-app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/users', userRoutes);
+  app.use('/api/v1/payments', paymentRoutes);
+  app.use('/api/v1/watchlist', watchlistRoutes);
+  app.use('/api/v1/news', newsRoutes);
+  app.use('/api/v1/admin', adminRoutes);
+  app.use('/api/v1/users', userRoutes);
+  app.use('/api/v1/contact', contactRoutes);
 
 app.get('/', (req, res) => {
   res.send('FalconTrade Backend is running');
