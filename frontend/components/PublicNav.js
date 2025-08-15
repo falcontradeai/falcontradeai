@@ -12,6 +12,8 @@ export default function PublicNav() {
     { href: '/pricing', label: 'Pricing' },
     { href: '/faq', label: 'FAQ' },
     { href: '/contact', label: 'Contact' },
+    { href: '/privacy', label: 'Privacy' },
+    { href: '/terms', label: 'Terms' },
     { href: '/login', label: 'Login' },
     { href: '/signup', label: 'Sign Up' },
   ];
