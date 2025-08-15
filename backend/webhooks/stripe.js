@@ -26,10 +26,16 @@ module.exports = async (req, res) => {
       switch (event.type) {
         case 'customer.subscription.deleted':
           user.subscriptionStatus = 'canceled';
+          if (user.role === 'subscriber') {
+            user.role = 'buyer';
+          }
           break;
         case 'customer.subscription.created':
         case 'customer.subscription.updated':
           user.subscriptionStatus = subscription.status;
+          if (subscription.status === 'active') {
+            user.role = 'subscriber';
+          }
           break;
         default:
           break;

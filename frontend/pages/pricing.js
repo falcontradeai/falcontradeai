@@ -2,21 +2,25 @@ import React from 'react';
 
 const plans = [
   {
-    name: 'Basic',
-    price: '$10 / month',
-    features: ['Core trading tools', 'Community support'],
-    planId: 'basic',
+    name: 'Free',
+    price: '$0',
+    features: ['Limited access to features'],
+    planId: 'free',
   },
   {
-    name: 'Pro',
+    name: 'Premium',
     price: '$30 / month',
-    features: ['Everything in Basic', 'Priority support', 'Advanced analytics'],
-    planId: 'pro',
+    features: ['Full access to all features'],
+    planId: 'premium',
   },
 ];
 
 export default function Pricing() {
   const handleSubscribe = (plan) => {
+    if (plan === 'free') {
+      window.location.href = '/signup';
+      return;
+    }
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/payments/create-checkout-session?plan=${plan}`;
   };
 
@@ -37,7 +41,7 @@ export default function Pricing() {
               onClick={() => handleSubscribe(p.planId)}
               className="mt-auto px-4 py-2 bg-brand text-white rounded-md hover:bg-brand-dark"
             >
-              Subscribe
+              {p.planId === 'free' ? 'Get Started' : 'Subscribe'}
             </button>
           </div>
         ))}
