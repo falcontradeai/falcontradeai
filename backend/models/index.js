@@ -8,6 +8,7 @@ const Message = require('./Message')(sequelize);
 const WatchlistItem = require('./WatchlistItem')(sequelize);
 const NewsItem = require('./NewsItem')(sequelize);
 const Notification = require('./Notification')(sequelize);
+const Content = require('./Content')(sequelize);
 
 // Associations
 User.hasMany(Offer, { foreignKey: 'userId' });
@@ -40,4 +41,5 @@ module.exports = {
   WatchlistItem,
   NewsItem,
   Notification,
+  Content,
 };
