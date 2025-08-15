@@ -5,63 +5,83 @@ const SOURCES = [
   {
     commodity: 'gold',
     fetch: async () => {
-      const response = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
-      const data = await response.json();
-      const item = data.items[0];
-      return {
-        currentPrice: item.xauPrice,
-        changePercent: item.pcXau,
-      };
+      try {
+        const response = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+        const data = await response.json();
+        const item = data.items[0];
+        return {
+          currentPrice: item.xauPrice,
+          changePercent: item.pcXau,
+        };
+      } catch (err) {
+        console.error('Failed to fetch gold data', err);
+        throw err;
+      }
     },
   },
   {
     commodity: 'silver',
     fetch: async () => {
-      const response = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
-      const data = await response.json();
-      const item = data.items[0];
-      return {
-        currentPrice: item.xagPrice,
-        changePercent: item.pcXag,
-      };
+      try {
+        const response = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
+        const data = await response.json();
+        const item = data.items[0];
+        return {
+          currentPrice: item.xagPrice,
+          changePercent: item.pcXag,
+        };
+      } catch (err) {
+        console.error('Failed to fetch silver data', err);
+        throw err;
+      }
     },
   },
   {
     commodity: 'wti',
     fetch: async () => {
-      const response = await fetch('https://www.alphavantage.co/query?function=WTI&interval=daily&apikey=demo');
-      const data = await response.json();
-      const series = data.data || data['data'];
-      if (!Array.isArray(series) || series.length < 2) throw new Error('No data');
-      const latest = series[0];
-      const prev = series[1];
-      const price = parseFloat(latest.value || latest.price || latest['1. open']);
-      const prevPrice = parseFloat(prev.value || prev.price || prev['1. open']);
-      const changePercent = ((price - prevPrice) / prevPrice) * 100;
-      return {
-        currentPrice: price,
-        changePercent,
-        date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
-      };
+      try {
+        const response = await fetch(`https://www.alphavantage.co/query?function=WTI&interval=daily&apikey=${process.env.ALPHAVANTAGE_KEY}`);
+        const data = await response.json();
+        const series = data.data || data['data'];
+        if (!Array.isArray(series) || series.length < 2) throw new Error('No data');
+        const latest = series[0];
+        const prev = series[1];
+        const price = parseFloat(latest.value || latest.price || latest['1. open']);
+        const prevPrice = parseFloat(prev.value || prev.price || prev['1. open']);
+        const changePercent = ((price - prevPrice) / prevPrice) * 100;
+        return {
+          currentPrice: price,
+          changePercent,
+          date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
+        };
+      } catch (err) {
+        console.error('Failed to fetch WTI data', err);
+        throw err;
+      }
     },
   },
   {
     commodity: 'corn',
     fetch: async () => {
-      const response = await fetch('https://www.alphavantage.co/query?function=CORN&interval=daily&apikey=demo');
-      const data = await response.json();
-      const series = data.data || data['data'];
-      if (!Array.isArray(series) || series.length < 2) throw new Error('No data');
-      const latest = series[0];
-      const prev = series[1];
-      const price = parseFloat(latest.value || latest.price || latest['1. open']);
-      const prevPrice = parseFloat(prev.value || prev.price || prev['1. open']);
-      const changePercent = ((price - prevPrice) / prevPrice) * 100;
-      return {
-        currentPrice: price,
-        changePercent,
-        date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
-      };
+      try {
+        const response = await fetch(`https://www.alphavantage.co/query?function=CORN&interval=daily&apikey=${process.env.ALPHAVANTAGE_KEY}`);
+        const data = await response.json();
+        const series = data.data || data['data'];
+        if (!Array.isArray(series) || series.length < 2) throw new Error('No data');
+        const latest = series[0];
+        const prev = series[1];
+        const price = parseFloat(latest.value || latest.price || latest['1. open']);
+        const prevPrice = parseFloat(prev.value || prev.price || prev['1. open']);
+        const changePercent = ((price - prevPrice) / prevPrice) * 100;
+        return {
+          currentPrice: price,
+          changePercent,
+          date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
+        };
+      } catch (err) {
+        console.error('Failed to fetch corn data', err);
+        throw err;
+      }
     },
   },
 ];

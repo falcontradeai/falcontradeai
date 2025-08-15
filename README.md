@@ -19,6 +19,7 @@ Deploy the Express API to [Render](https://render.com):
    - `STRIPE_PRICE_ID`
    - `FRONTEND_URL`
    - `JWT_SECRET`
+   - `ALPHAVANTAGE_KEY`
    - `PORT` (optional)
 
 ### Vercel (Frontend)
