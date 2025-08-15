@@ -7,6 +7,7 @@ const MarketData = require('./MarketData')(sequelize);
 const Message = require('./Message')(sequelize);
 const WatchlistItem = require('./WatchlistItem')(sequelize);
 const NewsItem = require('./NewsItem')(sequelize);
+const Notification = require('./Notification')(sequelize);
 
 // Associations
 User.hasMany(Offer, { foreignKey: 'userId' });
@@ -38,4 +39,5 @@ module.exports = {
   Message,
   WatchlistItem,
   NewsItem,
+  Notification,
 };

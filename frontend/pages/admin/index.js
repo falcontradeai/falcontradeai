@@ -6,6 +6,9 @@ import withAuth from '../../components/withAuth';
 function AdminDashboard() {
   const { user } = useAuth();
   const [metrics, setMetrics] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [message, setMessage] = useState('');
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -18,10 +21,39 @@ function AdminDashboard() {
         console.error(err);
       }
     };
+
+    const fetchNotifications = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/v1/admin/notifications', {
+          withCredentials: true,
+        });
+        setNotifications(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     if (user) {
       fetchMetrics();
+      fetchNotifications();
     }
   }, [user]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/v1/admin/notifications',
+        { message, targetRoles: roles },
+        { withCredentials: true },
+      );
+      setNotifications((prev) => [res.data, ...prev]);
+      setMessage('');
+      setRoles([]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   if (!metrics) return <p>Loading...</p>;
 
@@ -59,6 +91,47 @@ function AdminDashboard() {
             ))}
           </ul>
         </div>
+      </div>
+      <div className="mt-8">
+        <h2 className="text-xl mb-2">Broadcast Notification</h2>
+        <form onSubmit={handleSubmit} className="mb-4">
+          <textarea
+            className="border p-2 w-full mb-2"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Enter message"
+          />
+          <select
+            multiple
+            className="border p-2 w-full mb-2"
+            value={roles}
+            onChange={(e) =>
+              setRoles(Array.from(e.target.selectedOptions).map((o) => o.value))
+            }
+          >
+            <option value="buyer">Buyer</option>
+            <option value="seller">Seller</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2"
+          >
+            Send
+          </button>
+        </form>
+        <h3 className="text-lg mb-2">Recent Notifications</h3>
+        <ul>
+          {notifications.map((n) => (
+            <li key={n.id} className="border p-2 mb-2">
+              <div>{n.message}</div>
+              <div className="text-xs text-gray-500">
+                {n.targetRoles.join(', ')} |{' '}
+                {new Date(n.createdAt).toLocaleString()}
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
