@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 import { useAuth } from '../../contexts/AuthContext';
 import withAuth from '../../components/withAuth';
 
@@ -60,6 +61,20 @@ function AdminDashboard() {
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">Admin Dashboard</h1>
+      <div className="mb-4 space-x-4">
+        <Link href="/admin/users" className="text-blue-500 underline">
+          Users
+        </Link>
+        <Link href="/admin/offers" className="text-blue-500 underline">
+          Offers
+        </Link>
+        <Link href="/admin/rfqs" className="text-blue-500 underline">
+          RFQs
+        </Link>
+        <Link href="/admin/transactions" className="text-blue-500 underline">
+          Transactions
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 border rounded">
           <h2 className="text-xl">Users</h2>
