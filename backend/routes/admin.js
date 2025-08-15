@@ -17,6 +17,8 @@ const {
   rejectRFQ,
   getStripeRevenue,
 } = require('../controllers/admin');
+const { Notification, User } = require('../models');
+const notificationService = require('../services/notificationService');
 
 const router = express.Router();
 
@@ -34,6 +36,34 @@ router.get('/rfqs', auth, isAdmin, getRFQs);
 router.post('/rfqs/:id/approve', auth, isAdmin, approveRFQ);
 router.post('/rfqs/:id/reject', auth, isAdmin, rejectRFQ);
 router.get('/revenue', auth, isAdmin, getStripeRevenue);
+
+// Notifications
+router.post('/notifications', auth, isAdmin, async (req, res) => {
+  try {
+    const { message, targetRoles } = req.body;
+    if (!message || !Array.isArray(targetRoles)) {
+      return res.status(400).json({ message: 'message and targetRoles are required' });
+    }
+    const notification = await Notification.create({ message, targetRoles });
+    const users = await User.findAll({ where: { role: targetRoles } });
+    await notificationService.broadcast(notification, users);
+    res.status(201).json(notification);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get('/notifications', auth, isAdmin, async (req, res) => {
+  try {
+    const notifications = await Notification.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: 20,
+    });
+    res.json(notifications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
 
