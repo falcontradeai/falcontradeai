@@ -20,6 +20,7 @@ function sanitize(user) {
   const data = user.toJSON();
   delete data.password;
   delete data.resetToken;
+  delete data.resetTokenExpires;
   delete data.verificationToken;
   return data;
 }
