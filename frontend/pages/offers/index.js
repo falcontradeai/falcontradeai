@@ -144,7 +144,8 @@ function Offers() {
       <ul>
         {offers.map((offer) => (
           <li key={offer.id} className="border p-2 mb-2">
-            {offer.symbol} - {offer.price} - {offer.quantity} - {offer.status}
+            {offer.symbol} - {offer.price} - {offer.quantity} - {offer.status} -
+            {offer.orderStatus}
             <div className="mt-2 space-x-2">
               <Link
                 href={`/offers/${offer.id}`}

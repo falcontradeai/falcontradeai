@@ -77,6 +77,8 @@ function OfferDetail() {
       <p>Symbol: {offer.symbol}</p>
       <p>Price: {offer.price}</p>
       <p>Quantity: {offer.quantity}</p>
+      <p>Status: {offer.status}</p>
+      <p>Order Status: {offer.orderStatus}</p>
       <div className="mt-4">
         <h2 className="text-xl mb-2">Conversation</h2>
         {messages.map((msg) => (

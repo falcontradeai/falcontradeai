@@ -123,7 +123,7 @@ function RFQs() {
       <ul>
         {rfqs.map((rfq) => (
           <li key={rfq.id} className="border p-2 mb-2">
-            {rfq.symbol} - {rfq.quantity} - {rfq.status}
+            {rfq.symbol} - {rfq.quantity} - {rfq.status} - {rfq.orderStatus}
             <div className="mt-2 space-x-2">
               <Link
                 href={`/rfqs/${rfq.id}`}
