@@ -41,6 +41,24 @@ function AdminDashboard() {
           <h2 className="text-xl">Pending Listings</h2>
           <p className="text-3xl">{metrics.pendingListings}</p>
         </div>
+        <div className="p-4 border rounded">
+          <h2 className="text-xl">Subscription Revenue</h2>
+          <p className="text-3xl">${metrics.subscriptionRevenue}</p>
+        </div>
+        <div className="p-4 border rounded">
+          <h2 className="text-xl">Active Deals</h2>
+          <p className="text-3xl">{metrics.activeDeals}</p>
+        </div>
+        <div className="p-4 border rounded md:col-span-3">
+          <h2 className="text-xl mb-2">Top Commodities</h2>
+          <ul>
+            {metrics.topCommodities.map((item) => (
+              <li key={item.symbol}>
+                {item.symbol}: {item.totalQuantity} units ({item.listingCount} listings)
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
