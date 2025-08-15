@@ -25,6 +25,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+
 router.post('/signup', authLimiter, async (req, res) => {
   const { username, password, role } = req.body;
   try {
@@ -41,7 +43,7 @@ router.post('/signup', authLimiter, async (req, res) => {
         to: username,
         from: process.env.SMTP_FROM || 'no-reply@falcontrade.com',
         subject: 'Verify your email',
-        text: `Click to verify your email: http://localhost:3000/verify-email?token=${verificationToken}`,
+        text: `Click to verify your email: ${FRONTEND_URL}/verify-email?token=${verificationToken}`,
       });
     } catch (mailErr) {
       console.error('Error sending verification email', mailErr);
@@ -142,7 +144,7 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
         to: email,
         from: process.env.SMTP_FROM || 'no-reply@falcontrade.com',
         subject: 'Password Reset',
-        text: `Reset your password: http://localhost:3000/reset-password?token=${resetToken}`,
+        text: `Reset your password: ${FRONTEND_URL}/reset-password?token=${resetToken}`,
       });
     } catch (mailErr) {
       console.error('Error sending reset email', mailErr);
