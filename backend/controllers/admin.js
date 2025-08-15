@@ -88,7 +88,8 @@ async function deleteUser(req, res) {
 async function getListings(req, res) {
   try {
     const offers = await Offer.findAll();
-    res.json(offers);
+    const rfqs = await RFQ.findAll();
+    res.json({ offers, rfqs });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -101,6 +102,20 @@ async function approveListing(req, res) {
       return res.status(404).json({ message: 'Listing not found' });
     }
     offer.status = 'approved';
+    await offer.save();
+    res.json(offer);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function rejectListing(req, res) {
+  try {
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Listing not found' });
+    }
+    offer.status = 'rejected';
     await offer.save();
     res.json(offer);
   } catch (err) {
@@ -179,6 +194,7 @@ module.exports = {
   deleteUser,
   getListings,
   approveListing,
+  rejectListing,
   deleteListing,
   getRFQs,
   approveRFQ,
