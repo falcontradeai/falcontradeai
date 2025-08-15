@@ -1,5 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+
+const faqs = [
+  {
+    question: 'How do I reset my password?',
+    answer: 'Visit the reset-password page and follow the instructions sent to your email.',
+  },
+  {
+    question: 'Where can I view my offers?',
+    answer: 'After logging in, navigate to the dashboard to see all of your active offers.',
+  },
+  {
+    question: 'How do I contact support?',
+    answer: 'Use the form above or email us directly at support@example.com.',
+  },
+];
 
 export default function Contact() {
   const [name, setName] = useState('');
@@ -7,6 +22,19 @@ export default function Contact() {
   const [message, setMessage] = useState('');
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState('');
+
+  useEffect(() => {
+    const propertyId = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID;
+    const widgetId = process.env.NEXT_PUBLIC_TAWK_WIDGET_ID;
+    if (propertyId && widgetId) {
+      const s1 = document.createElement('script');
+      s1.async = true;
+      s1.src = `https://embed.tawk.to/${propertyId}/${widgetId}`;
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      document.body.appendChild(s1);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,6 +101,15 @@ export default function Contact() {
         </button>
         {status && <p>{status}</p>}
       </form>
+      <div className="mt-8">
+        <h2 className="text-xl mb-4">Frequently Asked Questions</h2>
+        {faqs.map((faq, idx) => (
+          <details key={idx} className="mb-2">
+            <summary className="font-medium cursor-pointer">{faq.question}</summary>
+            <p className="mt-1">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
     </div>
   );
 }
