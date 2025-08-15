@@ -2,15 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
+import LineChart from './LineChart';
 
 export default function CommodityCharts() {
   const { user } = useAuth();
@@ -94,15 +86,18 @@ export default function CommodityCharts() {
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={watchlist}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="symbol" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="price" stroke="#8884d8" />
-            </LineChart>
-          </ResponsiveContainer>
+          <LineChart
+            className="w-full h-full"
+            labels={watchlist.map((w) => w.symbol)}
+            datasets={[
+              {
+                label: 'Price',
+                data: watchlist.map((w) => w.price),
+                borderColor: '#8884d8',
+                tension: 0.4,
+              },
+            ]}
+          />
         </motion.div>
       )}
       <div className="mt-8">
@@ -144,26 +139,24 @@ export default function CommodityCharts() {
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={forecastData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="historical"
-                  stroke="#8884d8"
-                  name="Historical"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="forecast"
-                  stroke="#82ca9d"
-                  name="Forecast"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <LineChart
+              className="w-full h-full"
+              labels={forecastData.map((d) => d.date)}
+              datasets={[
+                {
+                  label: 'Historical',
+                  data: forecastData.map((d) => d.historical),
+                  borderColor: '#8884d8',
+                  tension: 0.4,
+                },
+                {
+                  label: 'Forecast',
+                  data: forecastData.map((d) => d.forecast),
+                  borderColor: '#82ca9d',
+                  tension: 0.4,
+                },
+              ]}
+            />
           </motion.div>
         )}
       </div>
