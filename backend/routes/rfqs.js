@@ -29,20 +29,19 @@ router.post(
   async (req, res) => {
     try {
       const { symbol, quantity } = req.body;
-      const rfq = await RFQ.create({
-        userId: req.user.id,
-        symbol,
-        quantity,
-      });
       const attachments = (req.files || []).map((file) => ({
         filename: file.filename,
         url: `/uploads/${file.filename}`,
         mimetype: file.mimetype,
         size: file.size,
       }));
-      const result = rfq.toJSON();
-      result.attachments = attachments;
-      res.json(result);
+      const rfq = await RFQ.create({
+        userId: req.user.id,
+        symbol,
+        quantity,
+        attachments,
+      });
+      res.json(rfq);
     } catch (err) {
       res.status(400).json({ error: err.message });
     }

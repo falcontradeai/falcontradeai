@@ -29,21 +29,20 @@ router.post(
   async (req, res) => {
     try {
       const { symbol, price, quantity } = req.body;
-      const offer = await Offer.create({
-        userId: req.user.id,
-        symbol,
-        price,
-        quantity,
-      });
       const attachments = (req.files || []).map((file) => ({
         filename: file.filename,
         url: `/uploads/${file.filename}`,
         mimetype: file.mimetype,
         size: file.size,
       }));
-      const result = offer.toJSON();
-      result.attachments = attachments;
-      res.json(result);
+      const offer = await Offer.create({
+        userId: req.user.id,
+        symbol,
+        price,
+        quantity,
+        attachments,
+      });
+      res.json(offer);
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
