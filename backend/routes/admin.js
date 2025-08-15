@@ -10,6 +10,7 @@ const {
   deleteUser,
   getListings,
   approveListing,
+  rejectListing,
   deleteListing,
   getRFQs,
   approveRFQ,
@@ -27,6 +28,7 @@ router.post('/users/:id/approve', auth, isAdmin, approveUser);
 router.delete('/users/:id', auth, isAdmin, deleteUser);
 router.get('/listings', auth, isAdmin, getListings);
 router.post('/listings/:id/approve', auth, isAdmin, approveListing);
+router.post('/listings/:id/reject', auth, isAdmin, rejectListing);
 router.delete('/listings/:id', auth, isAdmin, deleteListing);
 router.get('/rfqs', auth, isAdmin, getRFQs);
 router.post('/rfqs/:id/approve', auth, isAdmin, approveRFQ);

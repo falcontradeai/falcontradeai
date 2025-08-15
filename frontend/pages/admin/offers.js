@@ -10,7 +10,7 @@ function AdminOffers() {
       const res = await axios.get('http://localhost:5000/api/v1/admin/listings', {
         withCredentials: true,
       });
-      setOffers(res.data);
+      setOffers(res.data.offers || res.data);
     } catch (err) {
       console.error(err);
     }
@@ -45,6 +45,19 @@ function AdminOffers() {
     }
   };
 
+  const reject = async (id) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/api/v1/admin/listings/${id}/reject`,
+        {},
+        { withCredentials: true }
+      );
+      fetchOffers();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">Manage Offers</h1>
@@ -54,12 +67,20 @@ function AdminOffers() {
             {offer.symbol} - {offer.price} - {offer.quantity} - {offer.status}
             <div className="mt-2 space-x-2">
               {offer.status === 'pending' && (
-                <button
-                  className="bg-green-500 text-white px-2 py-1"
-                  onClick={() => approve(offer.id)}
-                >
-                  Approve
-                </button>
+                <>
+                  <button
+                    className="bg-green-500 text-white px-2 py-1"
+                    onClick={() => approve(offer.id)}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className="bg-yellow-500 text-white px-2 py-1"
+                    onClick={() => reject(offer.id)}
+                  >
+                    Reject
+                  </button>
+                </>
               )}
               <button
                 className="bg-red-500 text-white px-2 py-1"
