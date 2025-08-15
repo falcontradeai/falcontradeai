@@ -40,7 +40,7 @@ const SOURCES = [
     },
   },
   {
-    commodity: 'wti',
+    commodity: 'crude_oil',
     category: 'energy',
     fetch: async () => {
       try {
@@ -59,7 +59,7 @@ const SOURCES = [
           date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
         };
       } catch (err) {
-        console.warn('Failed to fetch WTI data', err);
+        console.warn('Failed to fetch crude oil data', err);
         throw err;
       }
     },
