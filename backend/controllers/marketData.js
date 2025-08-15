@@ -1,5 +1,6 @@
 const { MarketData } = require('../models');
 const { movingAverageForecast } = require('../utils/forecast');
+const { fetchCommodity } = require('../services/tradingEconomicsService');
 
 async function getMarketData(req, res) {
   try {
@@ -8,11 +9,27 @@ async function getMarketData(req, res) {
     if (!record) {
       return res.status(404).json({ message: 'Commodity not found' });
     }
+    let currentPrice = record.currentPrice;
+    let changePercent = record.changePercent;
+    try {
+      const live = await fetchCommodity(commodity);
+      if (live.price != null) {
+        currentPrice = live.price;
+        changePercent = live.changePercent;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch live price', err.message);
+    }
+    const direction = changePercent > 0 ? 'up' : changePercent < 0 ? 'down' : 'flat';
+    const arrow = direction === 'up' ? '↑' : direction === 'down' ? '↓' : '';
+    const color = direction === 'up' ? 'green' : direction === 'down' ? 'red' : 'gray';
     return res.json({
       category: record.category,
       lastUpdated: record.lastUpdated,
-      currentPrice: record.currentPrice,
-      changePercent: record.changePercent,
+      currentPrice,
+      changePercent,
+      arrow,
+      color,
       historical: record.historical,
       forecast: record.forecast,
     });
