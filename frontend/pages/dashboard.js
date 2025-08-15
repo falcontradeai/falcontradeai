@@ -17,6 +17,7 @@ function Dashboard() {
   const [watchlist, setWatchlist] = useState([]);
   const [news, setNews] = useState([]);
   const [forecastData, setForecastData] = useState([]);
+  const [marketInfo, setMarketInfo] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,6 +35,11 @@ function Dashboard() {
           'http://localhost:5000/api/v1/forecast/gold',
           { withCredentials: true }
         );
+        const marketRes = await axios.get(
+          'http://localhost:5000/api/v1/marketData/gold',
+          { withCredentials: true }
+        );
+        setMarketInfo(marketRes.data);
         const { historical = [], forecast = [] } = forecastRes.data;
         const combined = historical.map((h) => ({
           date: h.date,
@@ -67,6 +73,12 @@ function Dashboard() {
         </ResponsiveContainer>
       </div>
       <h1 className="text-2xl mt-8 mb-4">Gold Price Forecast</h1>
+      {marketInfo && (
+        <p className="mb-2 text-sm">
+          Category: {marketInfo.category} | Last Updated:{' '}
+          {new Date(marketInfo.lastUpdated).toLocaleString()}
+        </p>
+      )}
       <div style={{ width: '100%', height: 300 }}>
         <ResponsiveContainer>
           <LineChart data={forecastData}>

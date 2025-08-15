@@ -9,6 +9,8 @@ module.exports = {
       changePercent: { type: Sequelize.FLOAT, allowNull: true },
       historical: { type: Sequelize.JSON, allowNull: false, defaultValue: [] },
       forecast: { type: Sequelize.JSON, allowNull: false, defaultValue: [] },
+      category: { type: Sequelize.STRING, allowNull: false },
+      lastUpdated: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
       createdAt: { allowNull: false, type: Sequelize.DATE },
       updatedAt: { allowNull: false, type: Sequelize.DATE },
     });

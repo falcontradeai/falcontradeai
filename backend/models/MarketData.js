@@ -8,6 +8,8 @@ module.exports = (sequelize) => {
     changePercent: { type: DataTypes.FLOAT, allowNull: true },
     historical: { type: DataTypes.JSON, allowNull: false, defaultValue: [] },
     forecast: { type: DataTypes.JSON, allowNull: false, defaultValue: [] },
+    category: { type: DataTypes.STRING, allowNull: false },
+    lastUpdated: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   });
   return MarketData;
 };

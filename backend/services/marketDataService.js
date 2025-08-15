@@ -4,6 +4,7 @@ const { movingAverageForecast } = require('../utils/forecast');
 const SOURCES = [
   {
     commodity: 'gold',
+    category: 'metals',
     fetch: async () => {
       try {
         const response = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
@@ -21,6 +22,7 @@ const SOURCES = [
   },
   {
     commodity: 'silver',
+    category: 'metals',
     fetch: async () => {
       try {
         const response = await fetch('https://data-asg.goldprice.org/dbXRates/USD');
@@ -38,6 +40,7 @@ const SOURCES = [
   },
   {
     commodity: 'wti',
+    category: 'energy',
     fetch: async () => {
       try {
         const response = await fetch(`https://www.alphavantage.co/query?function=WTI&interval=daily&apikey=${process.env.ALPHAVANTAGE_KEY}`);
@@ -62,6 +65,7 @@ const SOURCES = [
   },
   {
     commodity: 'corn',
+    category: 'agriculture',
     fetch: async () => {
       try {
         const response = await fetch(`https://www.alphavantage.co/query?function=CORN&interval=daily&apikey=${process.env.ALPHAVANTAGE_KEY}`);
@@ -91,6 +95,7 @@ async function fetchCommodity(source) {
   const date = result.date || new Date().toISOString().split('T')[0];
   return {
     commodity: source.commodity,
+    category: source.category,
     currentPrice: result.currentPrice,
     changePercent: result.changePercent,
     entry: { date, price: result.currentPrice },
@@ -111,16 +116,25 @@ async function refreshMarketData() {
       const forecast = movingAverageForecast(historical);
       return {
         commodity: u.commodity,
+        category: u.category,
         currentPrice: u.currentPrice,
         changePercent: u.changePercent,
         historical,
         forecast,
+        lastUpdated: new Date(),
       };
     });
 
     if (payload.length > 0) {
       await MarketData.bulkCreate(payload, {
-        updateOnDuplicate: ['currentPrice', 'changePercent', 'historical', 'forecast'],
+        updateOnDuplicate: [
+          'category',
+          'currentPrice',
+          'changePercent',
+          'historical',
+          'forecast',
+          'lastUpdated',
+        ],
       });
     }
   } catch (err) {
