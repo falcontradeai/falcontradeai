@@ -23,7 +23,7 @@ export default function withAuth(Component, requiredRole) {
     useEffect(() => {
       if (loading) return;
       if (!user) {
-        router.replace('/login');
+        router.replace('/signup');
       } else if (requiredRole && user.role !== requiredRole) {
         router.replace(getDashboard(user.role));
       } else if (
