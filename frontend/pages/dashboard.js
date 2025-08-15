@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -23,6 +24,7 @@ function Dashboard() {
   const [symbols, setSymbols] = useState([]);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
   const [loadingForecast, setLoadingForecast] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const formatSymbol = (sym) => sym ? sym.charAt(0).toUpperCase() + sym.slice(1) : '';
 
@@ -88,8 +90,37 @@ function Dashboard() {
     }
   }, [user, selectedSymbol]);
 
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages/unread-count`,
+          { withCredentials: true }
+        );
+        setUnreadCount(res.data.count);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (user) {
+      fetchUnread();
+      const interval = setInterval(fetchUnread, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
   return (
     <div className="p-4">
+      <div className="flex justify-end mb-4">
+        <Link href="/messages" className="relative">
+          <span role="img" aria-label="messages">💬</span>
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1 text-xs">
+              {unreadCount}
+            </span>
+          )}
+        </Link>
+      </div>
       <h1 className="text-2xl mb-4">Watchlist Prices</h1>
       {loadingWatchlist ? (
         <div className="w-full h-72 md:h-96 bg-gray-200 animate-pulse rounded" />

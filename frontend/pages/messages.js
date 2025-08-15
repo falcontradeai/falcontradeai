@@ -9,7 +9,7 @@ function Messages() {
   const { user } = useAuth();
   const [messages, setMessages] = useState({});
   const [toUserId, setToUserId] = useState('');
-  const [offerId, setOfferId] = useState('');
+  const [listingId, setListingId] = useState('');
   const [rfqId, setRfqId] = useState('');
   const [content, setContent] = useState('');
   const [files, setFiles] = useState([]);
@@ -33,7 +33,7 @@ function Messages() {
 
   useEffect(() => {
     if (router.query.toUserId) setToUserId(router.query.toUserId);
-    if (router.query.offerId) setOfferId(router.query.offerId);
+    if (router.query.listingId) setListingId(router.query.listingId);
     if (router.query.rfqId) setRfqId(router.query.rfqId);
   }, [router.query]);
 
@@ -47,7 +47,7 @@ function Messages() {
       const formData = new FormData();
       formData.append('toUserId', toUserId);
       formData.append('content', content);
-      if (offerId) formData.append('offerId', offerId);
+      if (listingId) formData.append('listingId', listingId);
       if (rfqId) formData.append('rfqId', rfqId);
       files.forEach((file) => formData.append('attachments', file));
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/messages`, formData, {
@@ -76,9 +76,9 @@ function Messages() {
         />
         <input
           className="border p-2 w-full"
-          placeholder="Offer ID"
-          value={offerId}
-          onChange={(e) => setOfferId(e.target.value)}
+          placeholder="Listing ID"
+          value={listingId}
+          onChange={(e) => setListingId(e.target.value)}
         />
         <input
           className="border p-2 w-full"
