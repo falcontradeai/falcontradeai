@@ -8,6 +8,9 @@ function NewOffer() {
   const [symbol, setSymbol] = useState('');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [priceTier, setPriceTier] = useState('');
+  const [location, setLocation] = useState('');
+  const [deliveryTerms, setDeliveryTerms] = useState('');
   const [files, setFiles] = useState([]);
 
   const handleFileChange = (e) => {
@@ -21,6 +24,9 @@ function NewOffer() {
       formData.append('symbol', symbol);
       formData.append('price', price);
       formData.append('quantity', quantity);
+      formData.append('priceTier', priceTier);
+      formData.append('location', location);
+      formData.append('deliveryTerms', deliveryTerms);
       files.forEach((file) => formData.append('attachments', file));
       await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/offers`, formData, {
         withCredentials: true,
@@ -53,6 +59,24 @@ function NewOffer() {
           placeholder="Quantity"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
+        />
+        <input
+          className="border p-2 w-full"
+          placeholder="Price Tier"
+          value={priceTier}
+          onChange={(e) => setPriceTier(e.target.value)}
+        />
+        <input
+          className="border p-2 w-full"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <input
+          className="border p-2 w-full"
+          placeholder="Delivery Terms"
+          value={deliveryTerms}
+          onChange={(e) => setDeliveryTerms(e.target.value)}
         />
         <input type="file" multiple onChange={handleFileChange} />
         <button className="bg-blue-500 text-white px-4 py-2" type="submit">
