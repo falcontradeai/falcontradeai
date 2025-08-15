@@ -6,6 +6,15 @@ FalconTrade is a full-stack trading platform combining an Express backend and a 
 - `backend/` – Express API server. See the [backend setup guide](./backend/README.md).
 - `frontend/` – Next.js client application. See the [frontend setup guide](./frontend/README.md).
 
+## Environment Setup
+
+Copy the example environment files and fill in the values:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
 ## Deployment
 
 ### Render (Backend)
