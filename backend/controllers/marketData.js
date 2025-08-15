@@ -9,6 +9,8 @@ async function getMarketData(req, res) {
       return res.status(404).json({ message: 'Commodity not found' });
     }
     return res.json({
+      category: record.category,
+      lastUpdated: record.lastUpdated,
       currentPrice: record.currentPrice,
       changePercent: record.changePercent,
       historical: record.historical,
@@ -22,14 +24,22 @@ async function getMarketData(req, res) {
 async function addMarketData(req, res) {
   try {
     const { commodity } = req.params;
-    const { currentPrice, changePercent, date } = req.body;
+    const { currentPrice, changePercent, date, category } = req.body;
     const entryDate = date || new Date().toISOString().split('T')[0];
     const newEntry = { date: entryDate, price: currentPrice };
     let record = await MarketData.findOne({ where: { commodity } });
     if (!record) {
       const historical = [newEntry];
       const forecast = movingAverageForecast(historical);
-      await MarketData.create({ commodity, currentPrice, changePercent, historical, forecast });
+      await MarketData.create({
+        commodity,
+        category,
+        currentPrice,
+        changePercent,
+        historical,
+        forecast,
+        lastUpdated: new Date(),
+      });
     } else {
       const historical = record.historical || [];
       historical.push(newEntry);
@@ -37,6 +47,8 @@ async function addMarketData(req, res) {
       record.changePercent = changePercent;
       record.historical = historical;
       record.forecast = movingAverageForecast(historical);
+       if (category) record.category = category;
+       record.lastUpdated = new Date();
       await record.save();
     }
     return res.status(201).json({ message: 'Data added' });
@@ -48,16 +60,26 @@ async function addMarketData(req, res) {
 async function updateMarketData(req, res) {
   try {
     const { commodity } = req.params;
-    const { historical, currentPrice, changePercent } = req.body;
+    const { historical, currentPrice, changePercent, category } = req.body;
     let record = await MarketData.findOne({ where: { commodity } });
     const forecast = movingAverageForecast(historical);
     if (!record) {
-      await MarketData.create({ commodity, currentPrice, changePercent, historical, forecast });
+      await MarketData.create({
+        commodity,
+        category,
+        currentPrice,
+        changePercent,
+        historical,
+        forecast,
+        lastUpdated: new Date(),
+      });
     } else {
       record.currentPrice = currentPrice;
       record.changePercent = changePercent;
       record.historical = historical;
       record.forecast = forecast;
+      if (category) record.category = category;
+      record.lastUpdated = new Date();
       await record.save();
     }
     return res.json({ message: 'Data updated' });
