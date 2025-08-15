@@ -49,120 +49,148 @@ router.post(
 );
 
 // Get all offers
-router.get('/', auth, auth.requireActiveSubscription, async (req, res) => {
-  const {
-    commodity,
-    status,
-    sortBy,
-    order,
-    minPrice,
-    maxPrice,
-    minQuantity,
-    maxQuantity,
-    location,
-  } = req.query;
+router.get('/', auth, auth.requireActiveSubscription, async (req, res, next) => {
+  try {
+    const {
+      commodity,
+      status,
+      sortBy,
+      order,
+      minPrice,
+      maxPrice,
+      minQuantity,
+      maxQuantity,
+      location,
+    } = req.query;
 
-  const where = {};
+    const where = {};
 
-  if (commodity) {
-    where.symbol = { [Op.iLike]: `%${commodity}%` };
+    if (commodity) {
+      where.symbol = { [Op.iLike]: `%${commodity}%` };
+    }
+
+    if (status) where.status = status;
+
+    if (location) {
+      where.location = { [Op.iLike]: `%${location}%` };
+    }
+
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price[Op.gte] = parseFloat(minPrice);
+      if (maxPrice) where.price[Op.lte] = parseFloat(maxPrice);
+    }
+
+    if (minQuantity || maxQuantity) {
+      where.quantity = {};
+      if (minQuantity) where.quantity[Op.gte] = parseInt(minQuantity, 10);
+      if (maxQuantity) where.quantity[Op.lte] = parseInt(maxQuantity, 10);
+    }
+
+    const options = { where };
+    if (sortBy) {
+      options.order = [
+        [sortBy, order && order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'],
+      ];
+    }
+    const offers = await Offer.findAll(options);
+    res.json(offers);
+  } catch (err) {
+    next(err);
   }
-
-  if (status) where.status = status;
-
-  if (location) {
-    where.location = { [Op.iLike]: `%${location}%` };
-  }
-
-  if (minPrice || maxPrice) {
-    where.price = {};
-    if (minPrice) where.price[Op.gte] = parseFloat(minPrice);
-    if (maxPrice) where.price[Op.lte] = parseFloat(maxPrice);
-  }
-
-  if (minQuantity || maxQuantity) {
-    where.quantity = {};
-    if (minQuantity) where.quantity[Op.gte] = parseInt(minQuantity, 10);
-    if (maxQuantity) where.quantity[Op.lte] = parseInt(maxQuantity, 10);
-  }
-
-  const options = { where };
-  if (sortBy) {
-    options.order = [
-      [sortBy, order && order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC'],
-    ];
-  }
-  const offers = await Offer.findAll(options);
-  res.json(offers);
 });
 
 // Get a single offer
-router.get('/:id', auth, auth.requireActiveSubscription, async (req, res) => {
-  const offer = await Offer.findByPk(req.params.id);
-  if (!offer) {
-    return res.status(404).json({ message: 'Offer not found' });
+router.get('/:id', auth, auth.requireActiveSubscription, async (req, res, next) => {
+  try {
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+    res.json(offer);
+  } catch (err) {
+    next(err);
   }
-  res.json(offer);
 });
 
 // Update an offer (admin only)
-router.put('/:id', auth, isAdmin, async (req, res) => {
-  const offer = await Offer.findByPk(req.params.id);
-  if (!offer) {
-    return res.status(404).json({ message: 'Offer not found' });
+router.put('/:id', auth, isAdmin, async (req, res, next) => {
+  try {
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+    await offer.update(req.body);
+    res.json(offer);
+  } catch (err) {
+    next(err);
   }
-  await offer.update(req.body);
-  res.json(offer);
 });
 
 // Delete an offer (admin only)
-router.delete('/:id', auth, isAdmin, async (req, res) => {
-  const offer = await Offer.findByPk(req.params.id);
-  if (!offer) {
-    return res.status(404).json({ message: 'Offer not found' });
+router.delete('/:id', auth, isAdmin, async (req, res, next) => {
+  try {
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+    await offer.destroy();
+    res.json({ message: 'Offer deleted' });
+  } catch (err) {
+    next(err);
   }
-  await offer.destroy();
-  res.json({ message: 'Offer deleted' });
 });
 
 // Approve an offer (admin only)
-router.post('/:id/approve', auth, isAdmin, async (req, res) => {
-  const offer = await Offer.findByPk(req.params.id);
-  if (!offer) {
-    return res.status(404).json({ message: 'Offer not found' });
+router.post('/:id/approve', auth, isAdmin, async (req, res, next) => {
+  try {
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+    offer.status = 'approved';
+    await offer.save();
+    res.json(offer);
+  } catch (err) {
+    next(err);
   }
-  offer.status = 'approved';
-  await offer.save();
-  res.json(offer);
 });
 
 // Feature an offer (admin only)
-router.post('/:id/feature', auth, isAdmin, async (req, res) => {
-  const offer = await Offer.findByPk(req.params.id);
-  if (!offer) {
-    return res.status(404).json({ message: 'Offer not found' });
+router.post('/:id/feature', auth, isAdmin, async (req, res, next) => {
+  try {
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+    offer.status = 'featured';
+    await offer.save();
+    res.json(offer);
+  } catch (err) {
+    next(err);
   }
-  offer.status = 'featured';
-  await offer.save();
-  res.json(offer);
 });
 
 // Update order status (owner only)
-router.post('/:id/status', auth, async (req, res) => {
-  const { orderStatus } = req.body;
-  if (!['pending', 'shipped', 'completed'].includes(orderStatus)) {
-    return res.status(400).json({ message: 'Invalid order status' });
+router.post('/:id/status', auth, async (req, res, next) => {
+  try {
+    const { orderStatus } = req.body;
+    if (!['pending', 'shipped', 'completed'].includes(orderStatus)) {
+      return res.status(400).json({ message: 'Invalid order status' });
+    }
+    const offer = await Offer.findByPk(req.params.id);
+    if (!offer) {
+      return res.status(404).json({ message: 'Offer not found' });
+    }
+    if (offer.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+    offer.orderStatus = orderStatus;
+    await offer.save();
+    res.json(offer);
+  } catch (err) {
+    next(err);
   }
-  const offer = await Offer.findByPk(req.params.id);
-  if (!offer) {
-    return res.status(404).json({ message: 'Offer not found' });
-  }
-  if (offer.userId !== req.user.id) {
-    return res.status(403).json({ message: 'Not authorized' });
-  }
-  offer.orderStatus = orderStatus;
-  await offer.save();
-  res.json(offer);
 });
 
 module.exports = router;
