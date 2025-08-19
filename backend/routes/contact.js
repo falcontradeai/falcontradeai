@@ -24,18 +24,18 @@ router.post('/', upload.single('file'), async (req, res) => {
 
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
       secure: false,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     await transporter.sendMail({
-      from: process.env.SMTP_USER || email,
-      to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
+      from: process.env.EMAIL_FROM || email,
+      to: process.env.CONTACT_EMAIL || process.env.EMAIL_USER,
       subject: 'New Contact Message',
       text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
       attachments: req.file
