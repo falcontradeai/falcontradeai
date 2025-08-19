@@ -12,3 +12,6 @@ node_modules/
 
 # Local database
 backend/database.sqlite
+
+# Prevent Python mis-detection on Render
+/requirements.txt
