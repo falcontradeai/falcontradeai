@@ -8,20 +8,20 @@ class NotificationService extends EventEmitter {
 
   async sendEmail(to, notification) {
     try {
-      if (!process.env.SMTP_HOST) {
+      if (!process.env.EMAIL_HOST) {
         console.log(`Email to ${to}: ${notification.message}`);
         return;
       }
       const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
         auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
         },
       });
       await transporter.sendMail({
-        from: process.env.SMTP_FROM || 'no-reply@example.com',
+        from: process.env.EMAIL_FROM || 'no-reply@example.com',
         to,
         subject: 'FalconTrade Notification',
         text: notification.message,

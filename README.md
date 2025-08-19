@@ -29,6 +29,8 @@ Deploy the Express API to [Render](https://render.com):
    - `FRONTEND_URL` – base URL of the frontend application
    - `JWT_SECRET`
    - `ALPHAVANTAGE_KEY`
+   - `EMAIL_USER`
+   - `EMAIL_PASS`
    - `PORT` (optional)
 
 ### Vercel (Frontend)

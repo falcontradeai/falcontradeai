@@ -17,12 +17,12 @@ const authLimiter = rateLimit({
 });
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -42,7 +42,7 @@ router.post('/signup', authLimiter, async (req, res) => {
     try {
       await transporter.sendMail({
         to: username,
-        from: process.env.SMTP_FROM || 'no-reply@falcontrade.com',
+        from: process.env.EMAIL_FROM || 'no-reply@falcontrade.com',
         subject: 'Verify your email',
         text: `Click to verify your email: ${FRONTEND_URL}/verify-email?token=${verificationToken}`,
       });
@@ -145,7 +145,7 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
     try {
       await transporter.sendMail({
         to: email,
-        from: process.env.SMTP_FROM || 'no-reply@falcontrade.com',
+        from: process.env.EMAIL_FROM || 'no-reply@falcontrade.com',
         subject: 'Password Reset',
         text: `Reset your password: ${FRONTEND_URL}/reset-password?token=${resetToken}`,
       });

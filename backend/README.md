@@ -24,3 +24,7 @@ The backend expects configuration via environment variables. Copy `.env.example`
 
 - `FRONTEND_URL` — base URL of the frontend application used in verification and password reset emails and for CORS.
 - `TRADING_ECONOMICS_KEY` — credentials for the TradingEconomics API in the form `username:password` (defaults to `guest:guest`).
+- `DATABASE_URL` — connection string for the PostgreSQL database.
+- `JWT_SECRET` — secret used to sign JWT tokens.
+- `STRIPE_SECRET_KEY` — Stripe API key for processing payments.
+- `EMAIL_USER` and `EMAIL_PASS` — credentials for the email account used to send notifications.
