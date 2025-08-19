@@ -13,7 +13,7 @@ node_modules/
 # Local database
 backend/database.sqlite
 
-# Prevent Python mis-detection on Render
-codex/create-requirements.txt-for-backend-mhg6lq
+te-requirements.txt-for-backend-mhg6lq
 **/requirements.txt
+
 
