@@ -3,7 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 require('dotenv').config();
-const { sequelize, WatchlistItem, NewsItem } = require('./models');
+const { sequelize, WatchlistItem, NewsItem, User } = require('./models');
 const { scheduleMarketDataRefresh } = require('./services/marketDataService');
 
 const authRoutes = require('./routes/auth');
@@ -58,6 +58,24 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 sequelize.sync().then(async () => {
+  console.log('Database synced ✅');
+
+  // Ensure default admin user exists
+  const [user, created] = await User.findOrCreate({
+    where: { id: 1 },
+    defaults: {
+      username: 'admin',
+      email: 'admin@example.com',
+      password: 'dummyhash', // You can later replace with bcrypt hash
+    },
+  });
+
+  if (created) {
+    console.log('Default admin user created with id=1');
+  } else {
+    console.log('Admin user already exists');
+  }
+
   if (await WatchlistItem.count() === 0) {
     await WatchlistItem.bulkCreate([
       { userId: 1, symbol: 'AAPL', price: 150 },
@@ -78,6 +96,9 @@ sequelize.sync().then(async () => {
       },
     ]);
   }
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
   scheduleMarketDataRefresh();
 });
