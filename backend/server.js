@@ -67,6 +67,9 @@ sequelize.sync().then(async () => {
       username: 'admin',
       email: 'admin@example.com',
       password: 'dummyhash', // You can later replace with bcrypt hash
+      role: 'admin',
+      status: 'active',
+      subscriptionStatus: 'inactive',
     },
   });
 
