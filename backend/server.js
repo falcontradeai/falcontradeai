@@ -64,12 +64,11 @@ sequelize.sync().then(async () => {
   const [user, created] = await User.findOrCreate({
     where: { id: 1 },
     defaults: {
-      username: 'admin',
-      email: 'admin@example.com',
-      password: 'dummyhash', // You can later replace with bcrypt hash
-      role: 'admin',
-      status: 'active',
-      subscriptionStatus: 'inactive',
+      username: "admin",
+      password: "dummyhash", // You can later replace with bcrypt hash
+      role: "admin", // role is required to satisfy model constraints
+      status: "active",
+      subscriptionStatus: "inactive",
     },
   });
 
