@@ -16,8 +16,8 @@ const SOURCES = [
           changePercent: item.pcXau,
         };
       } catch (err) {
-        console.warn('Failed to fetch gold data', err);
-        throw err;
+        console.error('Failed to fetch gold data:', err.message);
+        return null;
       }
     },
   },
@@ -34,8 +34,8 @@ const SOURCES = [
           changePercent: item.pcXag,
         };
       } catch (err) {
-        console.warn('Failed to fetch silver data', err);
-        throw err;
+        console.error('Failed to fetch silver data:', err.message);
+        return null;
       }
     },
   },
@@ -59,8 +59,8 @@ const SOURCES = [
           date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
         };
       } catch (err) {
-        console.warn('Failed to fetch crude oil data', err);
-        throw err;
+        console.error('Failed to fetch crude oil data:', err.message);
+        return null;
       }
     },
   },
@@ -84,31 +84,35 @@ const SOURCES = [
           date: latest.date || latest.timestamp || new Date().toISOString().split('T')[0],
         };
       } catch (err) {
-        console.warn('Failed to fetch corn data', err);
-        throw err;
+        console.error('Failed to fetch corn data:', err.message);
+        return null;
       }
     },
   },
 ];
 
 async function fetchCommodity(source) {
-  const result = await source.fetch();
-  const date = result.date || new Date().toISOString().split('T')[0];
-  return {
-    commodity: source.commodity,
-    category: source.category,
-    currentPrice: result.currentPrice,
-    changePercent: result.changePercent,
-    entry: { date, price: result.currentPrice },
-  };
+  try {
+    const result = await source.fetch();
+    if (!result) return null;
+    const date = result.date || new Date().toISOString().split('T')[0];
+    return {
+      commodity: source.commodity,
+      category: source.category,
+      currentPrice: result.currentPrice,
+      changePercent: result.changePercent,
+      entry: { date, price: result.currentPrice },
+    };
+  } catch (err) {
+    console.error(`Failed to fetch ${source.commodity} data:`, err.message);
+    return null;
+  }
 }
 
 async function refreshMarketData() {
   try {
-    const results = await Promise.allSettled(SOURCES.map(fetchCommodity));
-    const updates = results
-      .filter((r) => r.status === 'fulfilled')
-      .map((r) => r.value);
+    const results = await Promise.all(SOURCES.map(fetchCommodity));
+    const updates = results.filter(Boolean);
 
     const existing = await MarketData.findAll();
     const payload = updates.map((u) => {

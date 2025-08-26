@@ -22,6 +22,16 @@ const contentRoutes = require('./routes/content');
 const stripeWebhook = require('./webhooks/stripe');
 
 const app = express();
+
+// Quick health check routes for Render
+app.get('/', (req, res) => {
+  res.status(200).send('FalconTrade backend is alive 🚀');
+});
+
+app.get('/docs', (req, res) => {
+  res.status(200).json({ message: 'Docs placeholder' });
+});
+
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -43,10 +53,6 @@ app.use('/api/v1/messages', messageRoutes);
   app.use('/api/v1/users', userRoutes);
   app.use('/api/v1/contact', contactRoutes);
   app.use('/api/v1/content', contentRoutes);
-
-app.get('/', (req, res) => {
-  res.send('FalconTrade Backend is running');
-});
 
 // Global error handler
 app.use((err, req, res, next) => {
