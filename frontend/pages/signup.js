@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { apiFetch } from '../lib/api';
 
 export default function Signup() {
   const [username, setUsername] = useState('');
@@ -9,14 +10,13 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, role }),
-    });
-    if (res.ok) {
+    try {
+      await apiFetch('/api/v1/auth/signup', {
+        method: 'POST',
+        body: JSON.stringify({ username, password, role }),
+      });
       router.push('/login');
-    } else {
+    } catch (err) {
       alert('Signup failed');
     }
   };

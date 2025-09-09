@@ -27,6 +27,7 @@ Deploy the Express API to [Render](https://render.com):
    - `STRIPE_WEBHOOK_SECRET`
    - `STRIPE_PRICE_ID`
    - `FRONTEND_URL` – base URL of the frontend application
+   - `CORS_ORIGINS` – optional comma-separated list of allowed origins for CORS
    - `JWT_SECRET`
    - `ALPHAVANTAGE_KEY`
    - `EMAIL_USER`

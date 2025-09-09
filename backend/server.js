@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { sequelize, WatchlistItem, NewsItem, User } = require('./models');
 const { scheduleMarketDataRefresh } = require('./services/marketDataService');
@@ -22,6 +25,9 @@ const contentRoutes = require('./routes/content');
 const stripeWebhook = require('./webhooks/stripe');
 
 const app = express();
+app.set('trust proxy', 1);
+app.use(helmet());
+app.use(compression());
 
 // Quick health check routes for Render
 app.get('/', (req, res) => {
@@ -32,13 +38,41 @@ app.get('/docs', (req, res) => {
   res.status(200).json({ message: 'Docs placeholder' });
 });
 
-app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
+const allowedOrigins = (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors());
+
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.post('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhook);
 
 app.use(express.json());
+
+app.get('/api/health/auth', (req, res) => {
+  const token = req.cookies && req.cookies.token;
+  if (!token) return res.sendStatus(401);
+  try {
+    jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.sendStatus(401);
+  }
+});
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/offers', offerRoutes);
