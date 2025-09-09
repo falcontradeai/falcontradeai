@@ -37,7 +37,7 @@ function AppContent({ Component, pageProps }) {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+    <div className="min-h-screen bg-gray-900 text-gray-100">
       <ThemeToggle />
       <Layout header={!user && <PublicNav />}>
         <Component {...pageProps} />

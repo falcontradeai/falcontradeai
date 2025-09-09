@@ -24,18 +24,18 @@ export default function PublicNav() {
 
   const linkClass = (href) =>
     router.pathname === href
-      ? 'text-brand-dark dark:text-brand-light border-b-2 border-brand-dark dark:border-brand-light'
-      : 'text-gray-700 dark:text-gray-300 hover:text-brand-dark dark:hover:text-brand-light';
+      ? 'text-indigo-400 border-b-2 border-indigo-400'
+      : 'text-gray-300 hover:text-indigo-400';
 
   return (
-    <nav className="bg-gray-100 dark:bg-gray-800 shadow">
+    <nav className="bg-gray-900 shadow">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          <div className="text-xl font-bold">
+          <div className="text-xl font-bold text-gray-100">
             <Link href="/">FalconTrade</Link>
           </div>
           <button
-            className="md:hidden text-gray-700 dark:text-gray-300 focus:outline-none"
+            className="md:hidden text-gray-100 focus:outline-none"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation"
           >
@@ -58,17 +58,17 @@ export default function PublicNav() {
             <li className="relative">
               <button
                 onClick={() => setResourcesOpen(!resourcesOpen)}
-                className="pb-1 text-gray-700 dark:text-gray-300 hover:text-brand-dark dark:hover:text-brand-light focus:outline-none"
+                className="pb-1 text-gray-300 hover:text-indigo-400 focus:outline-none"
               >
                 Resources
               </button>
               {resourcesOpen && (
-                <ul className="absolute left-0 mt-2 w-40 bg-white dark:bg-gray-700 rounded shadow-lg py-2">
+                <ul className="absolute left-0 mt-2 w-40 bg-gray-800 rounded shadow-lg py-2">
                   {resourceLinks.map(({ href, label }) => (
                     <li key={href}>
                       <Link
                         href={href}
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
                       >
                         {label}
                       </Link>
@@ -95,7 +95,7 @@ export default function PublicNav() {
             <li>
               <button
                 onClick={() => setResourcesOpen(!resourcesOpen)}
-                className="w-full text-left text-gray-700 dark:text-gray-300 hover:text-brand-dark dark:hover:text-brand-light"
+                className="w-full text-left text-gray-300 hover:text-indigo-400"
               >
                 Resources
               </button>

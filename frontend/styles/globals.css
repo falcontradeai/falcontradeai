@@ -4,6 +4,6 @@
 
 @layer base {
   html {
-    @apply font-sans bg-brand-background text-brand-foreground;
+    @apply font-sans bg-gray-900 text-gray-100 scroll-smooth;
   }
 }
