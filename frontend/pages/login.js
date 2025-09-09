@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-hot-toast';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -21,24 +24,24 @@ export default function Login() {
       router.push('/');
     } catch (err) {
       if (err.response && err.response.status === 403) {
-        alert(err.response.data.message);
+        toast.error(err.response.data.message);
       } else {
-        alert('Login failed');
+        toast.error('Login failed');
       }
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label>Username:</label>
-        <input value={username} onChange={(e) => setUsername(e.target.value)} />
+      <div className="space-y-2">
+        <label className="block">Username:</label>
+        <Input value={username} onChange={(e) => setUsername(e.target.value)} />
       </div>
-      <div>
-        <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <div className="space-y-2 mt-2">
+        <label className="block">Password:</label>
+        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </div>
-      <button type="submit">Login</button>
+      <Button type="submit" className="mt-4">Login</Button>
       <div>
         <a href="/forgot-password">Forgot password?</a>
       </div>

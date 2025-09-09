@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../lib/api';
+import Button from './ui/Button';
+import Skeleton from './ui/Skeleton';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 
 interface TickerItem {
   symbol: string;
@@ -19,6 +22,7 @@ export default function AppShell({ children }: AppShellProps) {
   const { user, logout } = useAuth();
   const [ticker, setTicker] = useState<TickerItem[]>([]);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchTicker = async () => {
@@ -53,12 +57,22 @@ export default function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="flex min-h-screen bg-neutral-950 text-neutral-100">
-      <nav className="w-[260px] flex-shrink-0 bg-neutral-900 p-4 flex flex-col space-y-2">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+      <nav
+        aria-label="Primary"
+        className={`fixed inset-y-0 left-0 z-40 w-64 transform bg-neutral-900 p-4 space-y-2 transition-transform md:relative md:translate-x-0 md:flex md:flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+      >
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`px-3 py-2 rounded ${linkClass(item.href)}`}
+            className={`px-3 py-2 rounded-2xl ${linkClass(item.href)}`}
+            onClick={() => setSidebarOpen(false)}
           >
             {item.label}
           </Link>
@@ -66,25 +80,34 @@ export default function AppShell({ children }: AppShellProps) {
       </nav>
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between p-4 border-b border-neutral-800">
-          <div className="text-xl font-bold">FalconTrade</div>
+          <div className="flex items-center space-x-2">
+            <Button
+              className="md:hidden p-2 bg-neutral-800"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open navigation"
+            >
+              <Bars3Icon className="w-5 h-5" />
+            </Button>
+            <div className="text-xl font-bold">FalconTrade</div>
+          </div>
           <input
             type="text"
             placeholder="Search symbols, RFQs..."
-            className="w-full max-w-md mx-4 px-3 py-2 rounded bg-neutral-800 text-neutral-100 focus:outline-none"
+            className="w-full max-w-md mx-4 px-3 py-2 rounded-2xl bg-neutral-800 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-brand-light"
           />
           {user ? (
             <div className="relative">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="w-8 h-8 rounded-full bg-neutral-700 flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-neutral-700 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-brand-light"
               >
                 {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </button>
               {menuOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-neutral-900 border border-neutral-700 rounded shadow-lg">
+                <div className="absolute right-0 mt-2 w-40 bg-neutral-900 border border-neutral-700 rounded-2xl shadow-lg">
                   <button
                     onClick={logout}
-                    className="block w-full text-left px-4 py-2 hover:bg-neutral-800"
+                    className="block w-full text-left px-4 py-2 hover:bg-neutral-800 rounded-2xl"
                   >
                     Logout
                   </button>
@@ -103,22 +126,28 @@ export default function AppShell({ children }: AppShellProps) {
           )}
         </header>
         <div className="flex border-b border-neutral-800 overflow-x-auto">
-          {ticker.map((item) => (
-            <div
-              key={item.symbol}
-              className="flex items-center space-x-2 px-4 py-1"
-            >
-              <span>{item.symbol}</span>
-              <span className="font-mono">{item.last}</span>
-              <span
-                className={`font-mono ${
-                  item.changePercent >= 0 ? 'text-green-500' : 'text-red-500'
-                }`}
-              >
-                {item.changePercent}%
-              </span>
-            </div>
-          ))}
+          {ticker.length === 0
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="w-32 h-6 m-2" />
+              ))
+            : ticker.map((item) => (
+                <div
+                  key={item.symbol}
+                  className="flex items-center space-x-2 px-4 py-1"
+                >
+                  <span>{item.symbol}</span>
+                  <span className="font-mono">{item.last}</span>
+                  <span
+                    className={`font-mono ${
+                      item.changePercent >= 0
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                    }`}
+                  >
+                    {item.changePercent}%
+                  </span>
+                </div>
+              ))}
         </div>
         <main className="p-4 flex-1 overflow-y-auto">{children}</main>
       </div>

@@ -6,4 +6,7 @@
   html {
     @apply font-sans bg-gray-900 text-gray-100 scroll-smooth;
   }
+  body {
+    font-feature-settings: 'tnum' 1, 'case' 1, 'ss01' 1;
+  }
 }
