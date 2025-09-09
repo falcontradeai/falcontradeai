@@ -1,0 +1,8 @@
+{
+  "fees": {
+    "transaction": 0.02,
+    "listing": 5
+  },
+  "regions": ["North America", "Europe", "Asia"],
+  "categories": ["Metals", "Energy", "Agriculture"]
+}
