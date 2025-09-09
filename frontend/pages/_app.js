@@ -7,6 +7,8 @@ import PublicNav from '../components/PublicNav';
 import Layout from '../components/Layout';
 import AppShell from '../components/AppShell';
 import { useRouter } from 'next/router';
+import ToastProvider from '../components/ui/ToastProvider';
+import { toast } from 'react-hot-toast';
 
 function AppContent({ Component, pageProps }) {
   const { user } = useAuth();
@@ -18,7 +20,7 @@ function AppContent({ Component, pageProps }) {
       (response) => response,
       (error) => {
         if (typeof window !== 'undefined') {
-          alert(
+          toast.error(
             error.response?.data?.error || 'An unexpected error occurred'
           );
         }
@@ -30,9 +32,12 @@ function AppContent({ Component, pageProps }) {
 
   if (isAppRoute) {
     return (
-      <AppShell>
-        <Component {...pageProps} />
-      </AppShell>
+      <>
+        <ThemeToggle />
+        <AppShell>
+          <Component {...pageProps} />
+        </AppShell>
+      </>
     );
   }
 
@@ -49,6 +54,7 @@ function AppContent({ Component, pageProps }) {
 export default function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
+      <ToastProvider />
       <AppContent Component={Component} pageProps={pageProps} />
     </AuthProvider>
   );

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiFetch } from '../../../lib/api';
+import { toast } from 'react-hot-toast';
+import Modal from '../../../components/ui/Modal';
 
 interface RFQ {
   id: number;
@@ -70,7 +72,7 @@ function CreateRfqModal({ onClose, onCreated }: CreateModalProps) {
       });
       onCreated();
       onClose();
-      if (typeof window !== 'undefined') alert('RFQ created');
+      toast.success('RFQ created');
     } catch (err: any) {
       setError(err.message || 'Failed to create RFQ');
     } finally {
@@ -79,92 +81,89 @@ function CreateRfqModal({ onClose, onCreated }: CreateModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white text-black p-6 rounded w-full max-w-lg overflow-y-auto max-h-[90vh]">
-        <h2 className="text-xl font-semibold mb-4">Create RFQ</h2>
-        {error && <div className="text-red-600 mb-2">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <label className="block mb-1">Product/Grade*</label>
-            <input
-              type="text"
-              value={product}
-              onChange={(e) => setProduct(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Region*</label>
-            <input
-              type="text"
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Incoterms*</label>
-            <input
-              type="text"
-              value={incoterms}
-              onChange={(e) => setIncoterms(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Quantity*</label>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Target Price</label>
-            <input
-              type="number"
-              value={targetPrice}
-              onChange={(e) => setTargetPrice(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Expiry Date/Time*</label>
-            <input
-              type="datetime-local"
-              value={expiry}
-              onChange={(e) => setExpiry(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div>
-            <label className="block mb-1">Notes</label>
-            <textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-200 rounded"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
-            >
-              {submitting ? 'Saving...' : 'Create'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Modal open onClose={onClose} title="Create RFQ">
+      {error && <div className="text-red-600 mb-2">{error}</div>}
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div>
+          <label className="block mb-1">Product/Grade*</label>
+          <input
+            type="text"
+            value={product}
+            onChange={(e) => setProduct(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Region*</label>
+          <input
+            type="text"
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Incoterms*</label>
+          <input
+            type="text"
+            value={incoterms}
+            onChange={(e) => setIncoterms(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Quantity*</label>
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Target Price</label>
+          <input
+            type="number"
+            value={targetPrice}
+            onChange={(e) => setTargetPrice(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Expiry Date/Time*</label>
+          <input
+            type="datetime-local"
+            value={expiry}
+            onChange={(e) => setExpiry(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div>
+          <label className="block mb-1">Notes</label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="w-full border p-2 rounded"
+          />
+        </div>
+        <div className="flex justify-end gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-200 rounded"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+          >
+            {submitting ? 'Saving...' : 'Create'}
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 
@@ -249,8 +248,8 @@ export default function RFQsPage() {
           className="border p-2 rounded"
         />
       </div>
-      <div className="overflow-auto">
-        <table className="min-w-full text-left border">
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-left border rounded-2xl overflow-hidden">
           <thead className="bg-neutral-800 text-neutral-100">
             <tr>
               <th className="p-2">RFQ ID</th>

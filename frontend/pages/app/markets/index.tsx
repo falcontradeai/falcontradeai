@@ -96,8 +96,8 @@ export default function MarketsPage() {
         />
       </div>
       {error && <div className="text-red-600 mb-4">{error}</div>}
-      <div className="overflow-auto max-h-[70vh]">
-        <table className="min-w-full">
+      <div className="overflow-x-auto max-h-[70vh]">
+        <table className="min-w-full rounded-2xl overflow-hidden">
           <thead className="sticky top-0 bg-white">
             <tr>
               <th className="text-left p-2">Symbol</th>

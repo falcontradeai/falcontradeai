@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../../../lib/api';
+import { toast } from 'react-hot-toast';
 
 interface Attachment {
   id: number;
@@ -100,7 +101,7 @@ export default function RfqDetail() {
       setMessage('');
       await loadRfq();
     } catch (err: any) {
-      if (typeof window !== 'undefined') alert(err.message || 'Failed to send offer');
+      toast.error(err.message || 'Failed to send offer');
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiFetch } from '../../lib/api';
 import systemConfig from '../../config/systemConfig.json';
+import { toast } from 'react-hot-toast';
 
 interface User {
   id: number;
@@ -70,7 +71,7 @@ export default function AdminDashboard() {
   };
 
   const requestInfo = (id: number) => {
-    alert(`Requesting more info for user ${id}`);
+    toast(`Requesting more info for user ${id}`);
   };
 
   if (loading || !user || user.role !== 'admin') {
@@ -119,7 +120,7 @@ export default function AdminDashboard() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Recent Signups</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+          <table className="min-w-full text-sm rounded-2xl overflow-hidden">
             <thead>
               <tr className="bg-neutral-900">
                 <th className="px-3 py-2 text-left">Username</th>
