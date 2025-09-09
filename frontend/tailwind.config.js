@@ -9,13 +9,12 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#1A56DB',
-          light: '#3B82F6',
-          dark: '#1E3A8A',
-          secondary: '#7E3AF2',
-          accent: '#16BDCA',
-          background: '#F5F7FA',
-          foreground: '#1F2937'
+          DEFAULT: '#6366F1',
+          light: '#818CF8',
+          dark: '#4F46E5',
+          accent: '#F59E0B',
+          background: '#111827',
+          foreground: '#F3F4F6'
         }
       },
       fontFamily: {
