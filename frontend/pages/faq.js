@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { apiFetch } from '../lib/api';
 
 export default function FAQ() {
   const { user } = useAuth();
@@ -10,12 +11,9 @@ export default function FAQ() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/v1/content/faq');
-        if (res.ok) {
-          const data = await res.json();
-          setContent(data.body);
-          setEditContent(data.body);
-        }
+        const data = await apiFetch('/api/v1/content/faq');
+        setContent(data.body);
+        setEditContent(data.body);
       } catch (err) {
         console.error(err);
       }
@@ -25,19 +23,12 @@ export default function FAQ() {
 
   const saveContent = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/v1/content/faq', {
+      const data = await apiFetch('/api/v1/content/faq', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ body: editContent }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setContent(data.body);
-        setEditing(false);
-      } else {
-        alert('Failed to save');
-      }
+      setContent(data.body);
+      setEditing(false);
     } catch (err) {
       console.error(err);
     }
