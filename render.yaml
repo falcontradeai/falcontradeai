@@ -3,5 +3,6 @@ services:
     name: backend
     env: node
     rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: npm start
+    healthCheckPath: /api/health/auth
