@@ -5,9 +5,13 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import ThemeToggle from '../components/ThemeToggle';
 import PublicNav from '../components/PublicNav';
 import Layout from '../components/Layout';
+import AppShell from '../components/AppShell';
+import { useRouter } from 'next/router';
 
 function AppContent({ Component, pageProps }) {
   const { user } = useAuth();
+  const router = useRouter();
+  const isAppRoute = router.pathname.startsWith('/app');
 
   useEffect(() => {
     const interceptor = axios.interceptors.response.use(
@@ -23,6 +27,14 @@ function AppContent({ Component, pageProps }) {
     );
     return () => axios.interceptors.response.eject(interceptor);
   }, []);
+
+  if (isAppRoute) {
+    return (
+      <AppShell>
+        <Component {...pageProps} />
+      </AppShell>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
